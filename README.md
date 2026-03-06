@@ -124,6 +124,15 @@ Fixed-width integer types ensure consistent behavior across platforms:
 - **Minimal Standard Library Coverage**: Only implements essential functions from `stdlib.h` and `stdio.h`; many standard C functions are not available
 - **No Exception Handling**: C++ features and structured exception handling not supported
 - **Single-Threaded**: No thread synchronization primitives
-- **Limited Printf**: Floating-point formatting (`%f`) not supported
+
+## Implements
+ **Printf**: 
+-   *format specifier support* 
+-    `%i`, `%d`, `%f`, `%e`, `%E`, `%g`, `%G`, `%u`, `%x`, `%X`, `%o`, `%p`, `%c`, `%s`, `%%` and `default`
+-   *format specifier manipulation*
+-   `flags` : `left` `plus` `space` `zero` `alt`
+-   `width` : can specify width, also `*` dynamic with specifier 
+-   `precision` : can specify precison of both string and floating points
+
 
 - **Date**: `05-March-2026`
