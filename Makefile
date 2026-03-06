@@ -1,22 +1,20 @@
 cxx = gcc
-cflags = -Os \
+cflags = \
+		 -Os \
+		 -fno-pie \
+		 -fno-builtin \
 	 	 -ffreestanding \
+		 -mno-stack-arg-probe \
 		 -fno-stack-protector \
 		 -fno-asynchronous-unwind-tables \
-		 -fno-builtin \
-		 -fno-pie \
-		 -mno-stack-arg-probe
  
-ldflags = \
-		  -nostdlib -s -static \
-		  -n \
-		  -Wl,--subsystem,windows \
+ldflags = -n            \
           -Wl,-e,_start_s \
           -Wl,--gc-sections \
           -Wl,--build-id=none \
+		  -nostdlib  -s -static \
+		  -Wl,--subsystem,windows \
 
-
-ld = ld
 as = as
 out = out
 src = src
