@@ -10,12 +10,13 @@ An ultra-lightweight, freestanding implementation of the C Standard Library for 
 - [Usage](#usage)
 - [Technical Details](#technical-details)
 - [Limitations](#limitations)
+- [Implementation](#Implementation)
 
 ## Features
 
 - **Zero Runtime Dependencies**: Compiled with `-nostdlib` and `-ffreestanding`, eliminating dependency on `msvcrt.dll` or any standard C runtime libraries
 - **Direct Win32 Integration**: Wraps Windows kernel APIs (`HeapAlloc`, `WriteFile`, `GetStdHandle`) for full control over system calls
-- **Custom Printf**: Lightweight `printf` implementation supporting `%s`, `%d`, `%i`, `%u`, `%x`, `%p`, and `%c` format specifiers
+- **Custom Printf**: Lightweight `printf` implementation
 - **Memory Management**: `malloc` and `free` implemented using Windows process heap API (`GetProcessHeap`)
 - **Complete Entry Point Control**: Custom assembly (`_start_s`) and C entry point (`_start_c`) instead of standard runtime initialization
 - **Fixed-Width Types**: Portable type definitions (`u8`, `u16`, `u32`, `u64`, `i8`, `i16`, `i32`, `i64`, `size_t`, `ssize_t`, `uintptr_t`)
@@ -125,7 +126,7 @@ Fixed-width integer types ensure consistent behavior across platforms:
 - **No Exception Handling**: C++ features and structured exception handling not supported
 - **Single-Threaded**: No thread synchronization primitives
 
-## Implements
+## Implementation
  **Printf**: 
 -   *format specifier support* 
 -    `%i`, `%d`, `%f`, `%e`, `%E`, `%g`, `%G`, `%u`, `%x`, `%X`, `%o`, `%p`, `%c`, `%s`, `%%` and `default`
