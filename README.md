@@ -55,12 +55,13 @@ The compiled executable is generated at `out/main.exe`.
 ├── Makefile              # Build configuration
 ├── README.md             # This file
 ├── include/              # Header files
-│   ├── defs.h           # Core definitions
-│   ├── math.h           # Math utilities
-│   ├── mem.h            # Memory management
-│   ├── printf.h         # Printf implementation
-│   ├── types.h          # Type definitions
-│   └── win.h            # Windows API wrappers
+│   ├── Wdefs.h           # Core definitions
+│   ├── Wmath.h           # Math utilities
+│   ├── Wmem.h            # Memory management
+│   ├── Wprintf.h         # Printf implementation
+│   ├── Wstring.h         # value to string implementation
+│   ├── Wtypes.h          # Type definitions
+│   └── wwin.h            # Windows API wrappers
 └── src/                 # Source files
     ├── _start_s.s       # Assembly entry point
     └── _start_c.c       # C runtime initialization
@@ -71,9 +72,9 @@ The compiled executable is generated at `out/main.exe`.
 Include the standard headers in your C code:
 
 ```c
-#include "include/printf.h"
-#include "include/mem.h"
-#include "include/types.h"
+#include "include/Wprintf.h"
+#include "include/Wmem.h"
+#include "include/Wtypes.h"
 
 void _start_c(void) {
     printf("Hello from TinyWinStd!\n");
@@ -109,6 +110,7 @@ Fixed-width integer types ensure consistent behavior across platforms:
 - **Signed**: `i8`, `i16`, `i32`, `i64`
 - **Pointers**: `size_t`, `ssize_t`, `uintptr_t`
 - **Floating**: `f32`, `f64`
+- **Boolean**: `boolean`
 
 ### Compiler Flags
 
@@ -122,18 +124,17 @@ Fixed-width integer types ensure consistent behavior across platforms:
 
 - **Windows x64 Only**: Platform-specific assembly and Win32 API calls limit portability
 - **Console I/O Only**: Input/output restricted to standard console handles; file I/O not currently implemented
-- **Minimal Standard Library Coverage**: Only implements essential functions from `stdlib.h` and `stdio.h`; many standard C functions are not available
 - **No Exception Handling**: C++ features and structured exception handling not supported
 - **Single-Threaded**: No thread synchronization primitives
 
 ## Implementation
  **Printf**: 
--   *format specifier support* 
+-   *specifiers* 
 -    `%i`, `%d`, `%f`, `%e`, `%E`, `%g`, `%G`, `%u`, `%x`, `%X`, `%o`, `%p`, `%c`, `%s`, `%%` and `default`
--   *format specifier manipulation*
+-   *modifiers*
 -   `flags` : `left` `plus` `space` `zero` `alt`
 -   `width` : can specify width, also `*` dynamic with specifier 
 -   `precision` : can specify precison of both string and floating points
 
 
-#**Date**: `05-March-2026`
+*Date*: `05-March-2026`
