@@ -129,9 +129,9 @@ Fixed-width integer types ensure consistent behavior across platforms:
 
 ## Implementation
  **Printf**: 
--   *specifiers* 
+    **specifiers** 
 -    `%i`, `%d`, `%f`, `%e`, `%E`, `%g`, `%G`, `%u`, `%x`, `%X`, `%o`, `%p`, `%c`, `%s`, `%%` and `default`
--   *modifiers*
+    **modifiers**
 -   `flags` : `left` `plus` `space` `zero` `alt`
 -   `width` : can specify width, also `*` dynamic with specifier 
 -   `precision` : can specify precison of both string and floating points
