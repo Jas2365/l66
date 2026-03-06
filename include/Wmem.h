@@ -1,6 +1,6 @@
 #pragma once
-#include "types.h"
-#include "win.h"
+#include "Wtypes.h"
+#include "Wwin.h"
 
 void* malloc(size_t size) {
     HANDLE heap = GetProcessHeap();

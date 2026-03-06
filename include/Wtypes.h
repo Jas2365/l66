@@ -16,6 +16,9 @@ typedef long long  i64;
 typedef float  f32;
 typedef double f64;
 
+// ----- boolean  ------------
+typedef bool boolean;
+
 // ----- size_t and uintptr_t -----
 #ifdef _WIN64
     typedef unsigned long long size_t;

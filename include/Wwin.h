@@ -1,6 +1,6 @@
 #pragma once
-#include "types.h"
-#include "defs.h"
+#include "Wtypes.h"
+#include "Wdefs.h"
 
 __declspec(dllimport) void   __stdcall ExitProcess(u32 uExitCode);
 __declspec(dllimport) HANDLE __stdcall GetProcessHeap();

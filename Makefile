@@ -9,14 +9,10 @@ cflags = -Os \
  
 ldflags = \
 		  -nostdlib -s -static \
-		  -n \
 		  -Wl,--subsystem,windows \
           -Wl,-e,_start_s \
           -Wl,--gc-sections \
-          -Wl,--build-id=none \
-          -Wl,--file-alignment,512 \
-          -Wl,--section-alignment,512 \
-          -Wl,--disable-reloc-section
+          -Wl,--build-id=none
 
 ld = ld
 as = as

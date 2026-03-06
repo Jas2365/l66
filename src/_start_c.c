@@ -1,15 +1,17 @@
-#include "win.h"
-#include "mem.h"
-#include "defs.h"
-#include "printf.h"
+#include "Wwin.h"
+#include "Wmem.h"
+#include "Wdefs.h"
+#include "Wprintf.h"
+#include "Wmath.h"
 
 void _start_c() {
-   if(AllocConsole()){  
-        i8* k = "one";
-        i32 kk = 0xa;
-        i32 kk2 = 0x8;
-        printf("hello world %o world\n", kk);
-        printf("hello world %o world\n", kk2);
+   if(AllocConsole()){
+    
+        const i8* var = "apple";
+        f32 val = 0.236;
+        i32 vali = -1;
+        printf("Val:%.2s %+.3f  %o val val\n", var, val, vali);
+        
         pause();
     }
 

@@ -1,5 +1,8 @@
 #pragma once
-#include "types.h"
+#include "Wtypes.h"
+
+#define maxf32 3.402823e38
+#define maxf64 1.797639e308
 
 #define NULL 0LL
 #define exit_success 0
