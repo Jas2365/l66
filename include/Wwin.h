@@ -32,6 +32,6 @@ void read_console(u32 size) {
 }
 
 void pause(){
-    print_console("Enter any Key to continue...");
+    print_console("\nEnter any Key to continue...");
     read_console(1);
 }
