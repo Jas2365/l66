@@ -1,4 +1,4 @@
-# TinyWinStd: Minimalist C Standard Library
+# LeanAPI (leap): Minimalist C Standard Library For Windows x64
 
 An ultra-lightweight, freestanding implementation of the C Standard Library for **Windows x64**. This project bypasses the standard MSVCRT (Microsoft Visual C Runtime) and links directly against **kernel32.dll**, providing a minimal runtime for bare-metal or size-constrained Windows applications.
 
@@ -75,15 +75,17 @@ Include the standard headers in your C code:
 #include "include/Wprintf.h"
 #include "include/Wmem.h"
 #include "include/Wtypes.h"
-
-void _start_c(void) {
-    printf("Hello from TinyWinStd!\n");
     
-    u8 *buffer = malloc(256);
-    if (buffer) {
-        printf("Allocated 256 bytes\n");
-        free(buffer);
+void _start_c() {
+
+   if(AllocConsole()){
+        printf("Hello from TinyWinStd!\n");
+        pause();
+
+        exit(exit_success);
     }
+
+    exit(exit_failure);
 }
 ```
 
