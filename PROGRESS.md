@@ -236,7 +236,7 @@ While several advanced features remain unimplemented, the core functionality is 
 
 ## Implements Completed
 **Memory Management**
-- `malloc`: Wraps `HeapAlloc(GetProcessHeap(), 0, size)`
+- `malloc`: Wraps `HeapAlloc` against the process heap
 - `free`: Wraps `HeapFree` against the process heap
 
 **I/O**
