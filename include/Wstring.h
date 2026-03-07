@@ -1,41 +1,48 @@
+/*
+ * Copyright 2026 Jas2365
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #pragma once
 
 #include "Wtypes.h"
-#include "Wmem.h"
+#include "Wdefs.h"
 
-i32 itos(i64 val, i8* buffer, i32 base, i32 uppercase) {
+#define upper_case_digits "0123456789ABCDEF"
+#define lower_case_digits "0123456789abcdef"
+
+#define itos_temp_size 65
+
+i32 itos(i64 val, i8* buffer, i32 base, boolean uppercase) {
     
     if(val == 0) {
         buffer[0] = '0';
         return 1;
     }
     
-    i8* temp = (i8*)malloc(sizeof(i8) *65);
+    static i8 temp[itos_temp_size];
     i32 i = 0;
-    // i32 i = 0, j = 0;
-    // while( val > 0) {
-    //     u64 rem = val % base;
-    //     if(rem < 10) {
-    //         temp[i++] = (i8)rem + '0';
-    //     } else {
-    //         temp[i++] = (i8)rem - 10 + (uppercase ? 'A' : 'a');
-    //     }
-    //     val /= base;
-    // }
-    // i32 len = i;
-    // while(i>0) buffer[j++] = temp[--i];
-    // return len;
-    
-    const i8* digits = uppercase ? "0123456789ABCDEF" : "0123456789abcdef";
+     
+    const i8* digits = uppercase ? upper_case_digits : lower_case_digits;
 
-    while(val > 0 && i < 64) {
+    while(val > 0 && i < itos_temp_size -1) {
         temp[i++] = digits[val % base];
         val /= base;
     }
 
     i32 len = i, j = 0;
-    while(i >0) buffer[j++] = temp[--i];
-    free(temp);
+    while(i > 0) buffer[j++] = temp[--i];
     return len;
 }
 
@@ -66,7 +73,7 @@ i32 ftos(f64 val, i8* buffer, i32 precision){
     u64 ipart = (u64)val;
     f64 fpart = val - (f64)ipart;
 
-    len += itos(ipart, buffer + len, 10, 0);
+    len += itos(ipart, buffer + len, sys_decimal, lower_case);
 
     if(precision > 0) {
         buffer[len++] = '.';
@@ -81,7 +88,7 @@ i32 ftos(f64 val, i8* buffer, i32 precision){
     return len;
 }
 
-i32 ftoes(f64 val, i8* buffer, i32 precision, i32 uppercase) {
+i32 ftoes(f64 val, i8* buffer, i32 precision, boolean uppercase) {
     i32 len = 0;
 
     if(val < 0) { buffer[len++] = '-'; val = -val; }
@@ -99,6 +106,6 @@ i32 ftoes(f64 val, i8* buffer, i32 precision, i32 uppercase) {
 
     i32 abs_ex = (ex < 0) ? -ex : ex;
     if(abs_ex < 10) buffer[len++] = '0';
-    len+= itos((u64)abs_ex, buffer + len, 10, uppercase);
+    len+= itos((u64)abs_ex, buffer + len, sys_decimal, uppercase);
     return len;
 }

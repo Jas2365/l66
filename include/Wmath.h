@@ -1,3 +1,19 @@
+/*
+ * Copyright 2026 Jas2365
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #pragma once
 #include "Wtypes.h"
 
@@ -52,80 +68,9 @@ f64 pow(f64 bx, f64 ey) {
             return ((i32)ey & 1 == 0) ? res : -res;
         }
     }
-
     if(ey == (i32)ey){
         return powi(bx, (i32)ey);
     }
     
     return expf((ey * lognf(bx)));
 }
-
-f64 pow10i(i32 e){
-    f64 res = 1.0;
-    if(e > 0) while(e--) res *=10.0;
-    else while(e++) res /= 10.0;
-    return res;
-}
-
-
-// static i32 f64_to_str(f64 val, i8* buf, i32 precision) {
-//     i32 len = 0;
-//     if (val < 0) { buf[len++] = '-'; val = -val; }
-
-//     val += 0.5 * power10(-precision);
-
-//     u64 ipart = (u64)val;
-//     f64 fpart = val - (f64)ipart;
-//     len += itos(ipart, buf + len, 10, 0);
-
-//     if (precision > 0) {
-//         buf[len++] = '.';
-//         while (precision--) {
-//             fpart *= 10.0;
-//             i32 digit = (i32)fpart;
-//             buf[len++] = digit + '0';
-//             fpart -= digit;
-//         }
-//     }
-//     return len;
-// }
-
-// static i32 f64_to_sci(f64 val, i8* buf, i32 precision, i32 uppercase) {
-//     i32 len = 0;
-//     if (val < 0) { buf[len++] = '-'; val = -val; }
-
-//     i32 exponent = 0;
-//     if (val != 0.0) {
-//         while (val >= 10.0) { val /= 10.0; exponent++; }
-//         while (val < 1.0) { val *= 10.0; exponent--; }
-//     }
-
-//     len += f64_to_str(val, buf + len, precision);
-//     buf[len++] = uppercase ? 'E' : 'e';
-//     buf[len++] = (exponent >= 0) ? '+' : '-';
-    
-//     u64 abs_exp = (exponent < 0) ? -exponent : exponent;
-//     if (abs_exp < 10) buf[len++] = '0';
-//     len += itos(abs_exp, buf + len, 10, 0);
-    
-//     return len;
-// }
-
-
-//  case 'f': fval = va_arg(args, f64);
-//                   b_idx += f64_to_str(fval, buffer + b_idx, 6);
-//                   break;
-//         case 'e': fval = va_arg(args, f64);
-//                   b_idx += f64_to_sci(fval, buffer + b_idx, 6, 0);
-//                   break;
-//         case 'E': fval = va_arg(args, f64);
-//                   b_idx += f64_to_sci(fval, buffer + b_idx, 6, 1);
-//                   break;
-//         case 'g':
-//         case 'G': fval = va_arg(args, f64);
-//                   if (fval != 0.0 && (fval >= 1000000.0 || fval < 0.0001)) {
-//                       b_idx += f64_to_sci(fval, buffer + b_idx, 4, (*p == 'G'));
-//                   } else {
-//                       b_idx += f64_to_str(fval, buffer + b_idx, 4);
-//                   }
-//                   break;

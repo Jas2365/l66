@@ -10,7 +10,8 @@ An ultra-lightweight, freestanding implementation of the C Standard Library for 
 - [Usage](#usage)
 - [Technical Details](#technical-details)
 - [Limitations](#limitations)
-- [Implementation](#Implementation)
+- [Documentation](#documentation)
+- [License](#license)
 
 ## Features
 
@@ -98,22 +99,6 @@ The program control flow begins in assembly (`_start_s`):
 2. Allocates 32-byte shadow space for Windows x64 calling convention
 3. Transfers control to the C entry point (`_start_c`)
 
-### Memory and I/O
-
-- **stdout**: Mapped to `GetStdHandle(STD_OUTPUT_HANDLE)`
-- **stdin**: Mapped to `GetStdHandle(STD_INPUT_HANDLE)`
-- **malloc**: Wraps `HeapAlloc(GetProcessHeap(), 0, size)`
-- **free**: Wraps `HeapFree` against the process heap
-
-### Type System
-
-Fixed-width integer types ensure consistent behavior across platforms:
-- **Unsigned**: `u8`, `u16`, `u32`, `u64`
-- **Signed**: `i8`, `i16`, `i32`, `i64`
-- **Pointers**: `size_t`, `ssize_t`, `uintptr_t`
-- **Floating**: `f32`, `f64`
-- **Boolean**: `boolean`
-
 ### Compiler Flags
 
 - `-ffreestanding`: No standard library assumptions
@@ -129,14 +114,26 @@ Fixed-width integer types ensure consistent behavior across platforms:
 - **No Exception Handling**: C++ features and structured exception handling not supported
 - **Single-Threaded**: No thread synchronization primitives
 
-## Implementation
- **Printf**: 
--    **specifiers** 
--    `%i`, `%d`, `%f`, `%e`, `%E`, `%g`, `%G`, `%u`, `%x`, `%X`, `%o`, `%p`, `%c`, `%s`, `%%` and `default`
--    **modifiers**
--   `flags` : `left` `plus` `space` `zero` `alt`
--   `width` : can specify width, also `*` dynamic with specifier 
--   `precision` : can specify precison of both string and floating points
+## Documentation
 
+For detailed information on implementation progress, supported features, and limitations, see **[PROGRESS.md](PROGRESS.md)**.
 
-*Date*: `05-March-2026`
+This includes:
+- Complete list of implemented features
+- Known limitations and unsupported functionality
+- Platform constraints and system requirements
+- Testing status and code quality notes
+- Future roadmap and planned enhancements
+
+## License
+
+This project is licensed under the **Apache License 2.0**. See the [LICENSE](LICENSE) file for full details.
+
+**Key Points:**
+- Free to use for personal and commercial projects
+- You may modify and distribute the software
+- You must include a copy of the license
+- Changes must be documented
+- Software is provided "as-is" without warranty
+
+*Date*: `07-March-2026`
