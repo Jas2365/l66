@@ -57,7 +57,7 @@ i32 ftos(f64 val, i8* buffer, i32 precision){
         return len;
     }
 
-    if(val > maxf64) {
+    if(val > max_f64) {
         buffer[len++] ='I';
         buffer[len++] ='n';
         buffer[len++] ='f';
