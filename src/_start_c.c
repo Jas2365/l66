@@ -22,18 +22,18 @@
 #include "Wmath.h"
 
 void _start_c() {
-   if(AllocConsole()){
+    
     size_t sz = 1024;
-ssize_t ssz = -512;
+    ssize_t ssz = -512;
 
-i32 kk = 23;
-printf("kk : %u\n", kk);
-printf("Size a : %zu\n", sz);      // prints: Size: 1024
-printf("Signed: %zd\n", ssz);   // prints: Signed: -512
-printf("Hex: %#zx\n", sz);
+    i32 kk = 23;
+    printf("kk : %u\n", kk);
+    printf("Size a : %zu\n", sz);      // prints: Size: 1024
+    printf("Signed: %zd\n", ssz);   // prints: Signed: -512
+    printf("Hex: %#zx\n", sz);
         
-        pause();
-    }
-
+    pause();
+    
     exit(exit_success);
+    
 }
