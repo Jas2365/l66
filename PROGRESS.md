@@ -243,12 +243,12 @@ While several advanced features remain unimplemented, the core functionality is 
 - `stdout`: Mapped to `GetStdHandle(STD_OUTPUT_HANDLE)`
 - `stdin`: Mapped to `GetStdHandle(STD_INPUT_HANDLE)`
 - `printf`
---   `specifiers`: `%i`, `%d`, `%f`, `%e`, `%E`, `%g`, `%G`, `%u`, `%x`, `%X`, `%o`, `%p`, `%c`, `%s`, `%%` and `default`
---   `modifiers`
---   `flags` : `left` `plus` `space` `zero` `alt`
---   `width` : can specify width, also `*` dynamic with specifier 
---   `precision` : can specify precison of both string and floating points
---   `length` : `l` (long), `ll` (long long), `z` (size_t/ssize_t)
+-   `specifiers`: `%i`, `%d`, `%f`, `%e`, `%E`, `%g`, `%G`, `%u`, `%x`, `%X`, `%o`, `%p`, `%c`, `%s`, `%%` and `default`
+-   `modifiers`
+-   `flags` : `left` `plus` `space` `zero` `alt`
+-   `width` : can specify width, also `*` dynamic with specifier 
+-   `precision` : can specify precison of both string and floating points
+-   `length` : `l` (long), `ll` (long long), `z` (size_t/ssize_t)
 
 **Data Types**
 Fixed-width integer types ensure consistent behavior across platforms:
