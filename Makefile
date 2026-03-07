@@ -8,11 +8,11 @@ cflags = \
 		 -fno-stack-protector \
 		 -fno-asynchronous-unwind-tables \
  
-ldflags = -n            \
-          -Wl,-e,_start_s \
-          -Wl,--gc-sections \
-          -Wl,--build-id=none \
-		  -nostdlib  -s -static \
+ldflags = -n -s              \
+          -Wl,-e,_start_s     \
+		  -nostdlib -static    \
+          -Wl,--gc-sections     \
+          -Wl,--build-id=none    \
 		  -Wl,--subsystem,windows \
 
 as = as
@@ -35,7 +35,6 @@ all: $(target)
 
 $(target): $(objs)
 	$(cxx) $(objs) -o $(target) $(ldflags) $(lib)
-	strip $(target)
 
 $(out)/%.o: $(src)/%.c
 	@if not exist out mkdir out
