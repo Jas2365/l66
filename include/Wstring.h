@@ -77,6 +77,11 @@ i32 f32tos(f32 val, i8* buffer, i32 precision){
     if(val > max_f32) return check_max(buffer, len);
     if(val < min_f32) return check_min(buffer, len);
 
+    
+    f32 rounding = 0.5;
+    for(int i = 0; i<precision; i++) rounding /= 10.0;
+    val += rounding;
+
     u64 ipart = (u64)val;
     f64 fpart = val - (f32)ipart;
     len += itos(ipart, buffer + len, sys_decimal, lower_case);
@@ -101,6 +106,10 @@ i32 f64tos(f64 val, i8* buffer, i32 precision){
     if(val > max_f64) return check_max(buffer, len);
     if(val < min_f64) return check_min(buffer, len);
 
+    f64 rounding = 0.5;
+    for(int i = 0; i<precision; i++) rounding /= 10.0;
+    val += rounding;
+
     u64 ipart = (u64)val;
     f64 fpart = val - (f64)ipart;
     len += itos(ipart, buffer + len, sys_decimal, lower_case);
@@ -124,6 +133,11 @@ i32 f128tos(f128 val, i8* buffer, i32 precision){
     if(val != val)    return check_nan(buffer, len);
     if(val > max_f128) return check_max(buffer, len);
     if(val < min_f128) return check_min(buffer, len);
+
+    
+    f128 rounding = 0.5;
+    for(int i = 0; i<precision; i++) rounding /= 10.0;
+    val += rounding;
 
     u64 ipart = (u64)val;
     f64 fpart = val - (f128)ipart;

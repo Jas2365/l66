@@ -19,27 +19,22 @@
 #include "Wstring.h"
 #include "Wdefs.h"
 
+
+#define buf_size 4096
+#define tm_buf_size 2048
+#define flush_buff_limit 1542
 typedef struct fmt_spec {
     i32 flags;
     i32 width;
     i32 precision;
-    i32 is_long_l;
-    i32 is_long_ll;
-    i32 is_size_t;
-    i32 is_short;
-    i32 is_char;
+    i32 len_modifiers;
 } fmt_spec_t, *fmt_spec_ptr_t;
 
-
 static void reset_fmt(fmt_spec_ptr_t spec) {
-    spec->flags = 0;
+    spec->flags = fmt_n;
     spec->width = 0;
     spec->precision = -1;
-    spec->is_long_l = 0;
-    spec->is_long_ll = 0;
-    spec->is_size_t = 0;
-    spec->is_short = 0;
-    spec->is_char = 0;
+    spec->len_modifiers = fmt_n;
 }
 
 static boolean is_flag(const i8* p) {
@@ -52,13 +47,23 @@ static boolean is_flag(const i8* p) {
     );
 }
 
+static boolean is_modifer(const i8* p) {
+    return (
+        *p  ==  len_h  ||
+        *p  ==  len_hh ||
+        *p  ==  len_l  ||
+        *p  ==  len_ll ||
+        *p  ==  len_L  ||
+        *p  ==  len_z 
+    );
+}
+
 static void flush_buffer(const i8* buffer, i32 len){
     if(len > 0){
         u32 written = 0;
         WriteFile(stdout, buffer, len, &written, NULL);
     }
 }
-
 
 //
 // Parse Format Specifier: %[flags][width][.precision][length specifier]
@@ -102,40 +107,61 @@ static const i8* parse_fmt(const i8* p, fmt_spec_ptr_t spec, va_list args) {
         }
     }
 
-    // length long long
-    if(*p == is_long){
-        spec->is_long_l = 1;
+
+    if(*p == len_l){
+        spec->len_modifiers = fmt_l;
         p++;
-        if(*p == is_long) {
-            spec->is_long_ll = 1;
+        if(*p == len_ll) { 
+            spec->len_modifiers = fmt_ll;
             p++;
         }
-    }
-
-    // length size_t
-    if(*p == is_sizet) {
-        spec->is_size_t = 1;
+    } else if(*p == len_h) {
+        spec->len_modifiers = fmt_h;
         p++;
-    }
-
-    // short h
-    if(*p == is_shorth) {
-        spec->is_short = 1;
-        p++;
-        if(*p == is_charhh) {
-            spec->is_char = 1;
+        if(*p == len_hh) {
+            spec->len_modifiers = fmt_hh;
             p++;
         }
+    } else if(*p == len_z) {
+        spec->len_modifiers = fmt_z;
+        p++;
+    } else if(*p == len_L) {
+        spec->len_modifiers = fmt_L;
+        p++;
+    } else {
+        spec->len_modifiers = fmt_n;
     }
-
+    
     return p;
+}
+
+static u64 u64_get_val(va_list args, i32 len_mod) {
+    switch (len_mod) {
+        case fmt_z  : return        va_arg(args, u64);
+        case fmt_l  : return        va_arg(args, i32);
+        case fmt_ll : return        va_arg(args, i64);
+        case fmt_h  : return (i16)  va_arg(args, i32);
+        case fmt_hh : return (i8)   va_arg(args, i32);
+        default     : return        va_arg(args, i32);
+    }
+}
+
+static f128 f128_get_val(va_list args, i32 len_mod) {
+    switch (len_mod) {
+        case fmt_l : return va_arg(args, f64);
+        case fmt_L : return va_arg(args, f128);
+        default    : return va_arg(args, f64);
+    }
 }
 
 static i32 apply_padding(i8* buffer, i32 len, const fmt_spec_ptr_t spec, i32 is_negative) {
     if(len >= spec->width) return len; // no padding
 
-    i32 pad_count = spec->width - len;
     i32 total_len = spec->width;
+    if(total_len > tm_buf_size) {
+        total_len = tm_buf_size;
+    }
+    i32 pad_count = total_len - len;
 
     // left alignment
     if(spec->flags & fmt_left) {
@@ -171,17 +197,21 @@ static i32 apply_padding(i8* buffer, i32 len, const fmt_spec_ptr_t spec, i32 is_
     return total_len;
 }
 
-#define buf_size 4096
-#define tm_buf_size 1024
-#define flush_buff_limit 1024
-
-void printf(const i8* format, ...){
+static i32 f_util(i8* buf, fmt_spec_ptr_t spec) { 
+    i32 len = 0;
+    if(spec->flags & fmt_plus) buf[len++] = char_plus;
+    else if(spec->flags & fmt_space) buf[len++] = char_space;
+    return len;
+}
+            
+i32 printf(const i8* format, ...){
     va_list args;
     va_start(args, format);
-
-    static i8  buffer[buf_size];
-    static i8  tm_buf[tm_buf_size];
-    static i32 b_idx = 0;
+    
+    i8  buffer[buf_size];
+    i8  tm_buf[tm_buf_size];
+    i32 b_idx = 0;
+    i32 total_written =0;
 
     for(const i8* p = format; *p != char_null_terminator; p++) {
         if(b_idx >= flush_buff_limit) {
@@ -207,93 +237,131 @@ void printf(const i8* format, ...){
 
         // format specifiers
         u64  val;
-        f64  valf;
+        i64  sval;
+        f128 absv;
         f128 valld;
+        const i8* str;
 
         i32 temp_len = 0;
         i32 is_negative = 0;
-        i32 prec;
+        i32 digit_start = 0;
+        i32 written = 0;
+        i32 zeros_to_add = 0;
+        i32 prec = 0;
         switch (*p) {
         case fmt_integer_i : // %i and %d behave the same in printf
         case fmt_decimal_d :
-            if(spec.is_size_t)          val =       va_arg(args, i64);
-            else if(spec.is_long_l)     val =       va_arg(args, i32);
-            else if(spec.is_long_ll)    val =       va_arg(args, i64);
-            else if(spec.is_char)       val = (i8)  va_arg(args, i32);
-            else if(spec.is_short)      val = (i16) va_arg(args, i32);
-            else                        val =       va_arg(args, i32);
-            if((i64)val < 0) {
+            val = u64_get_val(args, spec.len_modifiers);
+            sval = (i64)val;
+            if(sval < 0) {
                 tm_buf[temp_len++] = char_minus;
                 is_negative = 1;
-                val = (i64) val == -val ? val : -val;
-                temp_len += itos((u64)val, tm_buf + temp_len ,sys_decimal,lower_case);
+                val = (u64)-(sval);
             } else {
                 if(spec.flags & fmt_plus) tm_buf[temp_len++] = char_plus;
                 else if(spec.flags & fmt_space) tm_buf[temp_len++] = char_space;
-                temp_len += itos((u64)val, tm_buf + temp_len, sys_decimal, lower_case);
             }
+            digit_start = temp_len;
+            written += itos((u64)val, tm_buf + temp_len, sys_decimal, lower_case);
+            
+            if(spec.precision > written) {
+                zeros_to_add = spec.precision - written;
+
+                // shifting
+                for(i32 i = written -1; i>=0; i--){
+                    tm_buf[digit_start +i + zeros_to_add] = tm_buf[digit_start+i];
+                }
+                // fill
+                for(i32 i = 0; i <zeros_to_add; i++){
+                    tm_buf[digit_start + i] = char_zero;
+                }
+                temp_len += spec.precision;
+            } else temp_len += written;
             break;
         case fmt_floating_f:
-            valf = va_arg(args, f64);
-            if(valf < 0) tm_buf[temp_len++] = char_minus;
-            else if(spec.flags & fmt_plus) tm_buf[temp_len++] = char_plus;
-            else if(spec.flags & fmt_space) tm_buf[temp_len++] = char_space;
-            prec = (spec.precision >= 0) ? spec.precision : default_precision; 
-            temp_len += f64tos(valf, tm_buf + temp_len, prec);
+            valld = f128_get_val(args, spec.len_modifiers);
+            if(valld < 0.0L) { tm_buf[temp_len++] = char_minus;  valld = -valld; } 
+            temp_len += f_util(tm_buf + temp_len, &spec);
+            prec = (spec.precision >= 0) ? spec.precision : default_precision;            
+            temp_len += f128tos(valld, tm_buf + temp_len, prec);
             break;
         case fmt_exponent_le:
         case fmt_exponent_ue: 
-            valf = va_arg(args, f64);
-            if(valf < 0) tm_buf[temp_len++] = char_minus;
-            else if(spec.flags & fmt_plus) tm_buf[temp_len++] = char_plus;
-            else if(spec.flags & fmt_space) tm_buf[temp_len++] = char_space;
+            valld = f128_get_val(args, spec.len_modifiers);
+            if(valld < 0.0L) { tm_buf[temp_len++] = char_minus;  valld = -valld; } 
+            temp_len += f_util(tm_buf + temp_len, &spec);
             prec = (spec.precision >= 0) ? spec.precision : default_precision;
-            temp_len += f64toes(valf, tm_buf + temp_len, prec, (*p == 'E'));
+
+            temp_len += f128toes(valld, tm_buf + temp_len, prec, (*p == 'E'));
             break;
         case fmt_generic_lg:
         case fmt_generic_ug: 
-            valf = va_arg(args, f64);
-            if(val < 0) tm_buf[temp_len++] = char_minus;
-            else if(spec.flags & fmt_plus) tm_buf[temp_len++] = char_plus;
-            else if(spec.flags & fmt_space) tm_buf[temp_len++] = char_space;
-            f64 absv = (valf < 0) ? -valf : valf;
+            valld = f128_get_val(args, spec.len_modifiers);
+            if(valld < 0.0L) { tm_buf[temp_len++] = char_minus;  valld = -valld; } 
+            temp_len += f_util(tm_buf + temp_len, &spec);
             prec = (spec.precision >= 0) ? spec.precision : default_precision;
-            if(absv != 0.0 && (absv >= 1000000.0 || absv < 0.0001)) {
-                temp_len += f64toes(valf, tm_buf + temp_len, prec -1 , (*p == 'G'));
-            } else {
-                temp_len += f64tos(valf, tm_buf +temp_len, prec);
-            }
+            
+            absv = (valld < 0.0L) ? -valld : valld;
+            if(absv != 0.0 && (absv >= 1000000.0L || absv < 0.0001L)) {
+                temp_len += f128toes(valld, tm_buf + temp_len, prec -1 , (*p == 'G'));
+            } else temp_len += f128tos(valld, tm_buf +temp_len, prec);
             break;
         case fmt_unsigned_u: 
-            if(spec.is_size_t)          val = va_arg(args, u64);
-            else if(spec.is_long_l)     val = va_arg(args, u32);
-            else if(spec.is_long_ll)    val = va_arg(args, u64);
-            temp_len += itos(val, tm_buf, sys_decimal, lower_case);
+            val = u64_get_val(args, spec.len_modifiers);
+            
+            digit_start = temp_len;
+            written += itos(val, tm_buf+temp_len, sys_decimal, lower_case);
+            
+            if(spec.precision > written) {
+                zeros_to_add = spec.precision - written;
+                // shifting
+                for(i32 i = written -1; i>=0; i--)  
+                    tm_buf[digit_start +i + zeros_to_add] = tm_buf[digit_start+i];
+                // fill
+                for(i32 i = 0; i <zeros_to_add; i++)
+                    tm_buf[digit_start + i] = char_zero;
+                // set len
+                temp_len += spec.precision;
+            } else temp_len += written;
+            
             break;
         case fmt_hexdecimal_lx: 
         case fmt_hexdecimal_ux: 
-            if(spec.is_size_t)          val = va_arg(args, u64);
-            else if(spec.is_long_l)     val = va_arg(args, u32);
-            else if(spec.is_long_ll)    val = va_arg(args, u64);
+            val = u64_get_val(args, spec.len_modifiers);
             if ((spec.flags & fmt_alt) && val != 0) {
                 tm_buf[temp_len++] = char_zero;
                 tm_buf[temp_len++] = (*p == char_ux) ? char_ux : char_lx;
-                temp_len += itos(val, tm_buf + temp_len, sys_hex, (*p == 'X'));
-            } else {
-                temp_len += itos(val, tm_buf , sys_hex, (*p == 'X'));
             }
+            digit_start = temp_len;
+            written += itos(val, tm_buf + temp_len, sys_hex, (*p == 'X'));
+            
+            if(spec.precision > written) {
+                zeros_to_add = spec.precision - written;
+                for(i32 i = written -1; i>=0; i--) {
+                    tm_buf[digit_start+i +zeros_to_add] = tm_buf[digit_start+i];
+                }
+                for(i32 i = 0; i<zeros_to_add; i++) {
+                    tm_buf[digit_start +i] = char_zero;
+                }
+                temp_len += spec.precision;
+            } else temp_len += written;
             break;
         case fmt_octal_o:   
-            if(spec.is_size_t)          val = va_arg(args, u64);
-            else if(spec.is_long_l)     val = va_arg(args, u32);
-            else if(spec.is_long_ll)    val = va_arg(args, u64);
+            val = u64_get_val(args, spec.len_modifiers);
             if((spec.flags & fmt_alt) && val != 0){
                 tm_buf[temp_len++] = char_zero;
-                tm_buf[temp_len++] = char_o;
-                temp_len += itos(val, tm_buf +temp_len , sys_octal, lower_case);
-            } else {
-                temp_len += itos(val, tm_buf, sys_octal, 0);
-            }
+                // tm_buf[temp_len++] = char_o;                                                Non standard 0o not recognisabe
+            } 
+            digit_start = temp_len;
+            written += itos(val, tm_buf +temp_len , sys_octal, lower_case);
+            if(spec.precision > written) {
+                zeros_to_add = spec.precision - written;
+                for(i32 i  = written -1; i>=0; i--)
+                    tm_buf[digit_start+i+zeros_to_add] = tm_buf[digit_start+i];
+                for(i32 i = 0; i< zeros_to_add; i++)
+                    tm_buf[digit_start+i] = char_zero;
+                temp_len += spec.precision;
+            } else temp_len += written;
             break;
         case fmt_pointer_p: 
             void* ptr = va_arg(args, void*);
@@ -301,12 +369,12 @@ void printf(const i8* format, ...){
             tm_buf[temp_len++] = char_lx;
             temp_len += itos((u64)ptr, tm_buf + temp_len, sys_hex, lower_case);
             break;
-        case fmt_string_s: 
-            const i8* s = va_arg(args, const i8*);
-            if(!s) s = null_string;
+        case fmt_string_s:
+            str = va_arg(args, const i8*);
+            if(!str) str = null_string;
             i32 max_chars = (spec.precision>= 0) ? spec.precision : -1;
-            while(*s && (max_chars < 0 || temp_len < max_chars)) {
-                tm_buf[temp_len++] = *s++;
+            while(*str && (max_chars < 0 || temp_len < max_chars) && (temp_len < tm_buf_size -1)) {
+                tm_buf[temp_len++] = *str++;
             }
             break;
         case fmt_character_c: 
@@ -320,21 +388,23 @@ void printf(const i8* format, ...){
             tm_buf[temp_len++] = *p;                
             break;
         }
-
+        if (temp_len == 0) { tm_buf[temp_len++] = '!'; } // Debug marker
         // padding
         temp_len = apply_padding(tm_buf, temp_len, &spec, is_negative);
-
         // copy to main buffer
         for(i32 i = 0; i< temp_len; i++){
             if(b_idx >= flush_buff_limit) {
+                total_written += b_idx;
                 flush_buffer(buffer, b_idx);
                 b_idx = 0;
             }
             buffer[b_idx++] = tm_buf[i];
         }
     }
-
+    total_written += b_idx;
     flush_buffer(buffer, b_idx);
     b_idx = 0;   // reset the buffer index [ otherwise causes duplication ]
     va_end(args);
+
+    return total_written;
 }

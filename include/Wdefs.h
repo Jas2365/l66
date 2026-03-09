@@ -33,13 +33,6 @@ typedef __builtin_va_list va_list;
 #define va_arg(v, t)     __builtin_va_arg(v, t)
 #define va_end(v)        __builtin_va_end(v)
 
-enum fmt_flags: i32 {
-    fmt_left  = 0x01,
-    fmt_plus  = 0x02,
-    fmt_space = 0x04,
-    fmt_zero  = 0x08,
-    fmt_alt   = 0x10,
-};
 
 #define flag_left  '-'
 #define flag_plus  '+'
@@ -66,6 +59,13 @@ enum fmt_flags: i32 {
 #define is_sizet       'z'
 #define is_shorth      'h'
 #define is_charhh      'h'
+
+#define len_h  'h'  // short
+#define len_hh 'h'  // char
+#define len_l  'l'  // long
+#define len_ll 'l'  // longlong
+#define len_L  'L'  // double long
+#define len_z  'z'  // size_t
 
 #define lower_case false
 #define upper_case true
@@ -94,4 +94,24 @@ enum numsys : i32 {
     sys_octal = 8,
     sys_decimal = 10,
     sys_hex = 16,
+};
+
+enum fmt_flags: i32 {
+    fmt_left  = 0x01, // left align
+    fmt_plus  = 0x02, // force a plus sign
+    fmt_space = 0x04, // spaces
+    fmt_zero  = 0x08, //  pad with zeros
+    fmt_alt   = 0x10, // '#' alternate 0x 0o 0b
+};
+
+
+
+enum fmt_modifers: i32 {
+    fmt_n  = 0x00, // normal
+    fmt_h  = 0x01, // short
+    fmt_hh = 0x02, // character
+    fmt_l  = 0x04, // long = 32bit on 64 bit
+    fmt_ll = 0x08, // long 64
+    fmt_L  = 0x10, // for floats
+    fmt_z  = 0x20, // sizet
 };

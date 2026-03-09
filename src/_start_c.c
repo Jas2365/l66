@@ -22,16 +22,9 @@
 #include "Wmath.h"
 
 void _start_c() {
-    
-    size_t sz = 1024;
-    ssize_t ssz = -512;
+       
+    printf("%d\n",printf("0%d\n",printf("%dss\n",printf("aaaa\n"))));
 
-    i32 kk = 23;
-    printf("kk : %u\n", kk);
-    printf("Size a : %zu\n", sz);      // prints: Size: 1024
-    printf("Signed: %zd\n", ssz);   // prints: Signed: -512
-    printf("Hex: %i \n", sz);
-        
     pause();
     
     exit(exit_success);
