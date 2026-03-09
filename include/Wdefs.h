@@ -33,14 +33,6 @@ typedef __builtin_va_list va_list;
 #define va_arg(v, t)     __builtin_va_arg(v, t)
 #define va_end(v)        __builtin_va_end(v)
 
-typedef struct fmt_spec {
-    i32 flags;
-    i32 width;
-    i32 precision;
-    i32 is_long_long;
-    i32 is_size_t;
-} fmt_spec_t, *fmt_spec_ptr_t;
-
 enum fmt_flags: i32 {
     fmt_left  = 0x01,
     fmt_plus  = 0x02,
@@ -72,6 +64,8 @@ enum fmt_flags: i32 {
 #define decimal_point  '.'
 #define is_long        'l'
 #define is_sizet       'z'
+#define is_shorth      'h'
+#define is_charhh      'h'
 
 #define lower_case false
 #define upper_case true

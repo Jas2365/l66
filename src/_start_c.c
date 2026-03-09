@@ -30,7 +30,7 @@ void _start_c() {
     printf("kk : %u\n", kk);
     printf("Size a : %zu\n", sz);      // prints: Size: 1024
     printf("Signed: %zd\n", ssz);   // prints: Signed: -512
-    printf("Hex: %#zx\n", sz);
+    printf("Hex: %i \n", sz);
         
     pause();
     

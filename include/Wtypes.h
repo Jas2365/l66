@@ -31,6 +31,7 @@ typedef long long  i64;
 // ----- floating point ------
 typedef float  f32;
 typedef double f64;
+typedef long double f128;
 
 // ----- integer limits -----
 #define min_i8   (-128)
@@ -58,6 +59,8 @@ typedef double f64;
 #define max_f32  (3.402823e38f)
 #define min_f64  (-1.797639e308)
 #define max_f64  (1.797639e308)
+#define min_f128 (-1.189731e4932L)
+#define max_f128 (1.189731e4932L)
 
 // ----- boolean  ------------
 typedef bool boolean;
