@@ -14,12 +14,29 @@
  * limitations under the License.
  */
 
+#include "Wmem.h"
 
-#pragma once
-#include "Wtypes.h"
-#include "Wwin.h"
+void* malloc(s64 size) {
+    HANDLE heap = GetProcessHeap();
+    if(!heap) return NULL;
+    return HeapAlloc(GetProcessHeap(), NULL, size);
+}
 
-void* malloc(s64 size);
-void free(void* ptr);
-void Wmemcpy(void* dest, const void* src, i32 count);
-void Wmemset(void* dest, i8 val, i32 count);
+void free(void* ptr){
+    if(ptr) HeapFree(GetProcessHeap(), NULL, ptr);
+}
+
+void Wmemcpy(void* dest, const void* src, i32 count) {
+    i8* d = (i8*)dest;
+    const i8* s = (const i8*)src;
+    while(count--){
+        *d++ = *s++;
+    }
+}
+
+void Wmemset(void* dest, i8 val, i32 count) {
+    i8* d = (i8*)dest;
+    while(count--){
+        *d++ = val;
+    }
+}

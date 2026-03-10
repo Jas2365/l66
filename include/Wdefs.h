@@ -41,7 +41,10 @@ typedef __builtin_va_list va_list;
 #define flag_alt   '#'
 
 #define dyn_width  '*'
+#define char_la    'a'
+#define char_ua    'A'
 #define char_zero  '0'
+#define char_one   '1'
 #define char_nine  '9'
 #define char_space ' '
 
@@ -51,6 +54,8 @@ typedef __builtin_va_list va_list;
 #define char_space  ' '
 #define char_lx     'x'
 #define char_ux     'X'
+#define char_lp     'p'
+#define char_up     'P'
 #define char_o      'o'
 #define char_null_terminator '\0'
 
@@ -81,13 +86,24 @@ typedef __builtin_va_list va_list;
 #define fmt_exponent_ue     'E'
 #define fmt_generic_lg      'g'
 #define fmt_generic_ug      'G'
+#define fmt_hexfloat_la     'a'
+#define fmt_hexfloat_ua     'A'
 #define fmt_unsigned_u      'u'
 #define fmt_octal_o         'o'
 #define fmt_character_c     'c'
 #define fmt_string_s        's'
 #define fmt_pointer_p       'p'
+#define fmt_counter_n       'n'
 #define fmt_char_format     '%'
+
 #define null_string      "(null)" 
+#define null_string_w    L"(null)"
+#define nan_l             "NAN"
+#define nan_u             "nan"
+#define inf_l             "inf"
+#define inf_u             "INF"
+
+#define single_char 1
 
 enum numsys : i32 {
     sys_binary = 2,

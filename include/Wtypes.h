@@ -29,8 +29,8 @@ typedef int        i32;
 typedef long long  i64;
 
 // ----- floating point ------
-typedef float  f32;
-typedef double f64;
+typedef float       f32;
+typedef double      f64;
 typedef long double f128;
 
 // ----- integer limits -----
@@ -72,6 +72,12 @@ typedef bool boolean;
     typedef unsigned long long   uintptr_t;
     typedef signed   long long   intptr_t;
     typedef signed   long long   ptrdiff_t;
+
+    typedef unsigned long long   s64;   // size_t
+    typedef signed   long long   ss64;  // ssize_t
+    typedef unsigned long long   up64;  // uintptr_t
+    typedef signed   long long   ip64;  // intptr_t
+    typedef signed   long long   pd64;  // ptrdiff_t
     
     #define min_size_t   (0)
     #define max_size_t   (18446744073709551615ULL)
@@ -84,11 +90,17 @@ typedef bool boolean;
     #define min_ptrdiff_t (-9223372036854775807LL - 1)
     #define max_ptrdiff_t (9223372036854775807LL)
 #elif _WIN32
-    typedef unsigned int size_t;
-    typedef signed int   ssize_t;
-    typedef unsigned int uintptr_t;
-    typedef signed int   intptr_t;
-    typedef signed int   ptrdiff_t;
+    typedef unsigned int   size_t;
+    typedef signed   int   ssize_t;
+    typedef unsigned int   uintptr_t;
+    typedef signed   int   intptr_t;
+    typedef signed   int   ptrdiff_t;
+    
+    typedef unsigned int   s64;
+    typedef signed   int   ss64;
+    typedef unsigned int   up64;
+    typedef signed   int   ip64;
+    typedef signed   int   pd64;
     
     #define min_size_t   (0)
     #define max_size_t   (4294967295U)
@@ -111,9 +123,13 @@ typedef bool boolean;
 #endif
 
 // ----- additional types -----
-typedef unsigned short wchar_t;
-typedef long long intmax_t;
-typedef unsigned long long uintmax_t;
+typedef unsigned short      wchar_t;
+typedef long long           intmax_t;
+typedef unsigned long long  uintmax_t;
+
+typedef unsigned short      w16;  // wchar_t
+typedef long long           m64;  // intmax_t
+typedef unsigned long long  um64; // uintmax_t
 
 #define min_intmax_t  (-9223372036854775807LL - 1)
 #define max_intmax_t  (9223372036854775807LL)

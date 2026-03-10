@@ -23,6 +23,9 @@ _start_s:
     testq %rax, %rax
     jz  .alloc_console_failure
     call _start_c
+    addq $40, %rsp
+    xorq %rcx, %rcx
+    call ExitProcess
     
 .alloc_console_failure:
     movq $1, %rcx

@@ -95,7 +95,6 @@ LeanAPI is a freestanding C standard library implementation for Windows x64 that
 ### ❌ Not Implemented
 
 #### 1. **Printf Format Specifiers**
-- `%n` - Pointer to output character count (security risk)
 - `%a`, `%A` - Hexadecimal floating-point notation
 - `%i` base detection (currently treats as `%d`)
 
@@ -117,7 +116,6 @@ LeanAPI is a freestanding C standard library implementation for Windows x64 that
 - **Thread Support:** No thread creation, synchronization, or thread-local storage
 - **Dynamic Loading:** No `LoadLibrary()` or `GetProcAddress()` wrappers
 - **Registry Access:** No Windows registry API wrappers
-- **Unicode:** No wide character support (`wchar_t`, `wcprintf()`)
 
 #### 5. **Standard Library Functions**
 - `qsort()`, `bsearch()` - Sorting and searching
@@ -128,10 +126,7 @@ LeanAPI is a freestanding C standard library implementation for Windows x64 that
 - `abort()` - Hard process termination
 
 #### 6. **Floating-Point Edge Cases**
-- `NaN` (Not a Number) handling incomplete
-- `Inf` (Infinity) representation incomplete
 - Subnormal number support limited
-- Rounding mode selection not available
 
 #### 7. **Printf Precision Semantics**
 - Some edge cases with precision and flags not fully tested
@@ -165,7 +160,6 @@ LeanAPI is a freestanding C standard library implementation for Windows x64 that
 - **Size-Optimized:** `-Os` compilation flag keeps binary small
 
 ### Trade-offs
-- **Single Buffer:** Printf uses static buffers (4KB main, 1KB temp)
 - **No Caching:** Each printf triggers I/O operations
 - **Stack Alignment:** Required 16-byte stack alignment adds setup code
 

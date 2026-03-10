@@ -20,13 +20,45 @@
 #include "Wdefs.h"
 #include "Wprintf.h"
 #include "Wmath.h"
+// void inspect_f128_bits() {
+//     f128 test_val = 1.0L;
+//     u8 bytes[16];
+//     Wmemset(bytes, 0, 16);
+//     Wmemcpy(bytes, &test_val, 16);
 
+//     printf("Raw Bytes of 1.0L: ");
+//     for(i32 i = 0; i < 16; i++) {
+//         // Using your hex logic to see the raw memory
+//         printf("%02x ", bytes[i]);
+//     }
+//     printf("\n");
+// }
 void _start_c() {
-       
-    printf("%d\n",printf("0%d\n",printf("%dss\n",printf("aaaa\n"))));
 
+    // inspect_f128_bits();
+
+    // printf("%zu", 0x7FFFFFFFFFFFFFFFULL);
+    printf("%a\n", 0.23L);
+
+    // f64 kk = max_f32 + 13.8e10;
+    // printf("aaaa %e | %e %Lf \n", 23.3, 3.4, 111.25124542151L);
+    // printf("%d\n",printf("0%d\n",printf("%dss\n",printf("aaaa %e | %Lf \n",11.11, 3.15 ))));
+    // printf("%d\n",sizeof(f128));
+    // printf("%d\n",23);
+    // printf("%i\n",23);
+    // printf("%f\n",23.0f);
+    // printf("%g\n",23.0f);
+    // printf("%e\n",23.0f);
+    // printf("%c\n",236);
+    // printf("%c\n",2365);
+    // printf("%ls\n",L"one");
+    // printf("%p\n",&kk);
+    // printf("%%\n",&kk);
+    // i32 l = 0;
+    // printf("123 %n\n", &l);
+    // printf("%d\n", l);
     pause();
-    
+
     exit(exit_success);
-    
+
 }
