@@ -16,17 +16,17 @@
 
 #include "Wmem.h"
 
-void* malloc(s64 size) {
+null* malloc(s64 size) {
     HANDLE heap = GetProcessHeap();
     if(!heap) return NULL;
     return HeapAlloc(GetProcessHeap(), NULL, size);
 }
 
-void free(void* ptr){
+null free(null* ptr){
     if(ptr) HeapFree(GetProcessHeap(), NULL, ptr);
 }
 
-void Wmemcpy(void* dest, const void* src, i32 count) {
+null Wmemcpy(null* dest, const null* src, i32 count) {
     i8* d = (i8*)dest;
     const i8* s = (const i8*)src;
     while(count--){
@@ -34,7 +34,7 @@ void Wmemcpy(void* dest, const void* src, i32 count) {
     }
 }
 
-void Wmemset(void* dest, i8 val, i32 count) {
+null Wmemset(null* dest, i8 val, i32 count) {
     i8* d = (i8*)dest;
     while(count--){
         *d++ = val;

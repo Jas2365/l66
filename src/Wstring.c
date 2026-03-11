@@ -16,6 +16,7 @@
 
 #include "Wstring.h"
 #include "Wmem.h"
+#include "Wprintf.h"
 
 i32 check_nan(i8* buffer, i32 len) {
     buffer[len++] = 'N';
@@ -226,20 +227,32 @@ i32 f128toes(f128 val, i8* buffer, i32 precision, boolean uppercase) {
 i32 f128tohex(f128 val, i8 *buffer, i32 precision, boolean uppercase) {
     i32 len = 0;
     u8 bytes[16];
-    Wmemset(bytes, NULL, sys_hex);
+    Wmemset(bytes, 0, sys_hex);
     Wmemcpy(bytes, &val, sys_hex);
     // extract bytes based on your raw byte observation
     // mantissa is bytes 0-7,exponent is bytes 8-9
-    
+    // 0 | 000 0000 | 0000 0000 0000 0000 0000
+     u8 degub_bytes[sys_hex];                           // used to debug float values and the recursive printf works
+            Wmemcpy(degub_bytes, &bytes, sys_hex);
+            printf("Raw Bytes: ");
+            for(i32 i = 0; i < 16; i++) {
+                // Using your hex logic to see the raw memory
+                printf("%02x ", degub_bytes[i]);
+            }
+            printf("\n");
+
     u64 mantissa = *(u64*)&bytes[0];
     u16 exp_bits = *(u16*)&bytes[8];
     u16 exp_raw = exp_bits & max_i16;
-    
+    printf("mantissa %d\n", mantissa);
+    printf("exp bits %d\n", exp_bits);
+    printf("exp raw %d\n", exp_raw);
     // 0x
     buffer[len++] = char_zero;
     buffer[len++] = uppercase ? char_ux : char_lx;
-
-    boolean is_msb_set = (mantissa >> 63) & 1; // bit 63 is the integer bit
+    
+    u8 is_msb_set = (mantissa >> 63) & 1; // bit 63 is the integer bit
+    printf("is msb set %d\n", is_msb_set);
     buffer[len++] = is_msb_set ? char_one : char_zero;
 
     if(precision != 0){

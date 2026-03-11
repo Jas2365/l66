@@ -205,7 +205,6 @@ LeanAPI is a freestanding C standard library implementation for Windows x64 that
 ### High Priority
 1. Add `%h`, `%hh` length modifiers
 2. Implement file I/O operations
-3. Add unicode support (`wchar_t`, wide printf)
 4. Implement `qsort()`, `bsearch()`
 
 ### Medium Priority
@@ -237,7 +236,7 @@ While several advanced features remain unimplemented, the core functionality is 
 - `stdout`: Mapped to `GetStdHandle(STD_OUTPUT_HANDLE)`
 - `stdin`: Mapped to `GetStdHandle(STD_INPUT_HANDLE)`
 - `printf`
--   `specifiers`: `%i`, `%d`, `%f`, `%e`, `%E`, `%g`, `%G`, `%u`, `%x`, `%X`, `%o`, `%p`, `%c`, `%s`, `%%` and `default`
+-   `specifiers`: `%i`, `%d`, `%f`, `%e`, `%E`, `%g`, `%G`, `%u`, `%x`, `%X`, `%o`, `%p`, `%c`, `%s`, `%a`, `%A`, `%n`, `%%` and `default`
 -   `modifiers`
 -   `flags` : `left` `plus` `space` `zero` `alt`
 -   `width` : can specify width, also `*` dynamic with specifier 
@@ -246,8 +245,10 @@ While several advanced features remain unimplemented, the core functionality is 
 
 **Data Types**
 Fixed-width integer types ensure consistent behavior across platforms:
+- `void`: `null`
 - `Unsigned`: `u8`, `u16`, `u32`, `u64`
 - `Signed`: `i8`, `i16`, `i32`, `i64`
 - `Pointers`: `size_t`, `ssize_t`, `uintptr_t`
 - `Floating`: `f32`, `f64`
 - `Boolean`: `boolean`
+- `Additional`: `w16`(wchar_t), `m64`(intmax_t), `um64`(uintmax_t)

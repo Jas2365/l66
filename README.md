@@ -77,7 +77,7 @@ Include the standard headers in your C code:
 #include "include/Wmem.h"
 #include "include/Wtypes.h"
     
-void _start_c() {
+null _start_c() {
 
    if(AllocConsole()){
         printf("Hello from TinyWinStd!\n");

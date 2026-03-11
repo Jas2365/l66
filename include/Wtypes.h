@@ -15,6 +15,8 @@
  */
 
 #pragma once
+// ----- unsigned -----
+typedef void  null;
 
 // ----- unsigned -----
 typedef unsigned char       u8;
@@ -33,6 +35,9 @@ typedef float       f32;
 typedef double      f64;
 typedef long double f128;
 
+// ----- boolean  ------------
+typedef bool boolean;
+ 
 // ----- integer limits -----
 #define min_i8   (-128)
 #define max_i8   (127)
@@ -62,8 +67,6 @@ typedef long double f128;
 #define min_f128 (-1.189731e4932L)
 #define max_f128 (1.189731e4932L)
 
-// ----- boolean  ------------
-typedef bool boolean;
 
 // ----- size_t and uintptr_t -----
 #ifdef _WIN64
@@ -137,8 +140,8 @@ typedef unsigned long long  um64; // uintmax_t
 #define max_uintmax_t (18446744073709551615ULL)
 
 // ----- win types -----
-typedef void *HANDLE;
-typedef void *HWND;
-typedef void *HINSTANCE;
+typedef null *HANDLE;
+typedef null *HWND;
+typedef null *HINSTANCE;
 typedef u32   DWORD;
 typedef i32   BOOL;

@@ -25,7 +25,7 @@
 #define itos_temp_size (65)
 
 #define fractional_mantissa (9223372036854775807ULL)
-#define def_hex_precision   (15)
+#define def_hex_precision   (16)
 #define exp_bias            (0x3fff)
 #define exp_bias_neg        (-0x3ffe)
 #define exp_limit           (0x7fff)
