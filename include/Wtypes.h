@@ -36,7 +36,11 @@ typedef long long  i64;
 // ----- floating point ------
 typedef float       f32;
 typedef double      f64;
-typedef long double f128;
+
+// windows x87 hardware uses SSE2 only supports 32-bit and 64-bit floats
+// typedef long double f128; 
+// #define min_f128 (-1.189731e4932L)                      
+// #define max_f128 (1.189731e4932L)                                  
 
 // ----- integer limits -----
 #define min_i8   (-128)
@@ -63,9 +67,7 @@ typedef long double f128;
 #define min_f32  (-3.402823e38f)
 #define max_f32  (3.402823e38f)
 #define min_f64  (-1.797639e308)
-#define max_f64  (1.797639e308)
-#define min_f128 (-1.189731e4932L)
-#define max_f128 (1.189731e4932L)
+#define max_f64  (1.797639e308)                
 
 // ----- size_t and uintptr_t -----
 #ifdef _WIN64
