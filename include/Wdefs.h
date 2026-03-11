@@ -28,11 +28,24 @@
 #define stdout GetStdHandle(STD_OUTPUT_HANDLE)
 #define stdin  GetStdHandle(STD_INPUT_HANDLE)
 
-typedef __builtin_va_list va_list;
-#define va_start(v, l)   __builtin_va_start(v,l)
-#define va_arg(v, t)     __builtin_va_arg(v, t)
-#define va_end(v)        __builtin_va_end(v)
+// typedef __builtin_va_list va_list;
+// #define va_start(v, l)   __builtin_va_start(v,l)
+// #define va_arg(v, t)     __builtin_va_arg(v, t)
+// #define va_end(v)        __builtin_va_end(v)
+// removing builtin using macro
 
+typedef i8* va_list;
+#define va_align(n) (((n) + 7) & ~7)
+#define va_arg(ap, type)  \
+                    ((sizeof(type) > 8) \
+                        ? (**(type**)((ap += 8) -8)) \
+                        :  (*(type*)((ap += 8) -8)))
+#define va_start(ap, last)   (ap = (va_list)&(last) + va_align(sizeof(last)))
+#define va_end(ap)        (ap = (va_list)0)
+
+#define buf_size 2048
+#define tm_buf_size 1024
+#define flush_buff_limit 768
 
 #define flag_left  '-'
 #define flag_plus  '+'
@@ -57,6 +70,7 @@ typedef __builtin_va_list va_list;
 #define char_lp     'p'
 #define char_up     'P'
 #define char_o      'o'
+
 #define char_null_terminator '\0'
 
 #define decimal_point  '.'
@@ -71,6 +85,8 @@ typedef __builtin_va_list va_list;
 #define len_ll 'l'  // longlong
 #define len_L  'L'  // double long
 #define len_z  'z'  // size_t
+#define len_j  'j'  // greates width integer
+#define len_t  't'  // pointer difference
 
 #define lower_case false
 #define upper_case true
@@ -120,8 +136,6 @@ enum fmt_flags: i32 {
     fmt_alt   = 0x10, // '#' alternate 0x 0o 0b
 };
 
-
-
 enum fmt_modifers: i32 {
     fmt_n  = 0x00, // normal
     fmt_h  = 0x01, // short
@@ -130,4 +144,6 @@ enum fmt_modifers: i32 {
     fmt_ll = 0x08, // long 64
     fmt_L  = 0x10, // for floats
     fmt_z  = 0x20, // sizet
+    fmt_j  = 0x40, // greates width integer
+    fmt_t  = 0x80, // pointer difference
 };

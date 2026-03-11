@@ -16,10 +16,10 @@
 
 
 #pragma once
-#include "Wtypes.h"
+
 #include "Wwin.h"
 
-void* malloc(s64 size);
-void free(void* ptr);
-void Wmemcpy(void* dest, const void* src, i32 count);
-void Wmemset(void* dest, i8 val, i32 count);
+null* malloc(s64 size);
+null free(null* ptr);
+null Wmemcpy(null* dest, const null* src, i32 count);
+null Wmemset(null* dest, i8 val, i32 count);

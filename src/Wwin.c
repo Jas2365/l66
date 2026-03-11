@@ -16,11 +16,11 @@
 
 #include "Wwin.h"
 
-void exit(u32 exit_code){
+null exit(u32 exit_code){
     ExitProcess(exit_code);
 }
 
-void print_console(const char* str) {
+null print_console(const char* str) {
     DWORD len = 0;
     while(str[len]) len++;
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -30,13 +30,13 @@ void print_console(const char* str) {
     }
 }
 
-void read_console(u32 size) {
+null read_console(u32 size) {
     char buffer[size];
     DWORD read;
     ReadFile(GetStdHandle(STD_INPUT_HANDLE), buffer, size, &read, NULL);
 }
 
-void pause(){
+null pause(){
     print_console("Enter any Key to continue...");
     read_console(1);
 }

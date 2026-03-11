@@ -20,7 +20,7 @@
 #include "Wdefs.h"
 #include "Wprintf.h"
 #include "Wmath.h"
-// void inspect_f128_bits() {
+// null inspect_f128_bits() {
 //     f128 test_val = 1.0L;
 //     u8 bytes[16];
 //     Wmemset(bytes, 0, 16);
@@ -33,7 +33,7 @@
 //     }
 //     printf("\n");
 // }
-void _start_c() {
+null _start_c() {
 
     f32 num = 1.3725489f;    
     u8* p = (u8*)&num;
