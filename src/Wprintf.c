@@ -44,7 +44,6 @@ static boolean is_modifer(const i8* p) {
         *p  ==  len_hh ||
         *p  ==  len_l  ||
         *p  ==  len_ll ||
-        *p  ==  len_L  ||
         *p  ==  len_z  ||
         *p  ==  len_j  ||
         *p  ==  len_t
@@ -118,9 +117,6 @@ static const i8* parse_fmt(const i8* p, fmt_spec_ptr_t spec, va_list args) {
     } else if(*p == len_z) {
         spec->len_modifiers = fmt_z;
         p++;
-    } else if(*p == len_L) {
-        spec->len_modifiers = fmt_L;
-        p++;
     } else if(*p == len_j) {
         spec->len_modifiers = fmt_j;
         p++;
@@ -147,11 +143,12 @@ static u64 u64_get_val(va_list *args, i32 len_mod) {
     }
 }
 
-static f128 f128_get_val(va_list *args, i32 len_mod) {
-    if(len_mod == fmt_L){
-        return va_arg(*args, f128);
-    }     
-   return (f128)va_arg(*args, f64);
+static f64 f64_get_val(va_list *args, i32 len_mod) {
+    // if(len_mod == fmt_l){
+    //     return va_arg(*args, f64);
+    // }
+    // the caller promoted float to a double     
+   return va_arg(*args, f64);
 }
 
 static i32 apply_padding(i8* buffer, i32 len, const fmt_spec_ptr_t spec, i32 is_negative) {
@@ -239,8 +236,8 @@ i32 printf(const i8* format, ...){
         // format specifiers
         u64  val = 0;
         i64  sval = 0;
-        f128 absv = 0;
-        f128 valld = 0;
+        f64 absv = 0;
+        f64 valld = 0;
         w16 wchar = 0;
         const w16* wstr = NULL;
         i32 wlen = 0;
@@ -283,34 +280,36 @@ i32 printf(const i8* format, ...){
             } else temp_len += written;
             break;
         case fmt_floating_f:
-            valld = f128_get_val(&args, spec.len_modifiers);
+            valld = f64_get_val(&args, spec.len_modifiers);
             if(valld < 0.0L) { tm_buf[temp_len++] = char_minus;  valld = -valld; } 
             temp_len += f_util(tm_buf + temp_len, &spec);
             prec = (spec.precision >= 0) ? spec.precision : default_precision;            
-            temp_len += f128tos(valld, tm_buf + temp_len, prec);
+            temp_len += f64tos(valld, tm_buf + temp_len, prec);
             break;
         case fmt_exponent_le:
         case fmt_exponent_ue: 
-            valld = f128_get_val(&args, spec.len_modifiers);
+            valld = f64_get_val(&args, spec.len_modifiers);
             if(valld < 0.0L) { tm_buf[temp_len++] = char_minus;  valld = -valld; } 
             temp_len += f_util(tm_buf + temp_len, &spec);
             prec = (spec.precision >= 0) ? spec.precision : default_precision;
-            temp_len += f128toes(valld, tm_buf + temp_len, prec, (*p == 'E'));
+            temp_len += f64toes(valld, tm_buf + temp_len, prec, (*p == 'E'));
             break;
         case fmt_generic_lg:
         case fmt_generic_ug: 
-            valld = f128_get_val(&args, spec.len_modifiers);
+            valld = f64_get_val(&args, spec.len_modifiers);
             if(valld < 0.0L) { tm_buf[temp_len++] = char_minus;  valld = -valld; } 
             temp_len += f_util(tm_buf + temp_len, &spec);
             prec = (spec.precision >= 0) ? spec.precision : default_precision;
             absv = (valld < 0.0L) ? -valld : valld;
             if(absv != 0.0 && (absv >= 1000000.0L || absv < 0.0001L)) {
-                temp_len += f128toes(valld, tm_buf + temp_len, prec -1 , (*p == 'G'));
-            } else temp_len += f128tos(valld, tm_buf +temp_len, prec);
+                temp_len += f64toes(valld, tm_buf + temp_len, prec -1 , (*p == 'G'));
+            } else temp_len += f64tos(valld, tm_buf +temp_len, prec);
             break;
         case fmt_hexfloat_la:
         case fmt_hexfloat_ua:
-            valld = f128_get_val(&args, spec.len_modifiers);
+            valld = f64_get_val(&args, spec.len_modifiers);
+                // need to rewrite this in accordance to SSE2
+            
             // u8 degub_bytes[sys_hex];
             // Wmemcpy(degub_bytes, &valld, sys_hex);
             // printf("Raw Bytes of 1.0L: ");
@@ -319,25 +318,25 @@ i32 printf(const i8* format, ...){
             //     printf("%02x ", degub_bytes[i]);
             // }
             // printf("\n");
-            if(val < 0.0L) {is_negative =1; valld = -valld; }
+            // if(val < 0.0L) {is_negative =1; valld = -valld; }
             
-            if(is_negative ){
-                tm_buf[temp_len++] =char_minus;
-            } else {
-                temp_len += f_util(tm_buf +temp_len, &spec);
-            }
-            u8 raw_bytes[16];
-            Wmemcpy(raw_bytes, &valld, sys_hex);
-            u16 exp_raw =(*(u16*)&raw_bytes[8]) & exp_limit;
-            u64 mant_raw = (*(u64*)&raw_bytes[0]);
+            // if(is_negative ){
+            //     tm_buf[temp_len++] =char_minus;
+            // } else {
+            //     temp_len += f_util(tm_buf +temp_len, &spec);
+            // }
+            // u8 raw_bytes[16];
+            // Wmemcpy(raw_bytes, &valld, sys_hex);
+            // u16 exp_raw =(*(u16*)&raw_bytes[8]) & exp_limit;
+            // u64 mant_raw = (*(u64*)&raw_bytes[0]);
 
-            if(exp_raw == exp_limit){
-                if(mant_raw & mantisa_mask) str = (*p == char_ua) ? nan_u:nan_l;
-                else str = (*p == char_ua) ? inf_u : inf_l;
-                while(*str) tm_buf[temp_len++] = *str++;
-            } else{
-                temp_len += f128tohex(valld, tm_buf + temp_len, spec.precision, (*p == char_ua));
-            }
+            // if(exp_raw == exp_limit){
+            //     if(mant_raw & mantisa_mask) str = (*p == char_ua) ? nan_u:nan_l;
+            //     else str = (*p == char_ua) ? inf_u : inf_l;
+            //     while(*str) tm_buf[temp_len++] = *str++;
+            // } else{
+            //     temp_len += f128tohex(valld, tm_buf + temp_len, spec.precision, (*p == char_ua));
+            // }
 
             break;
         case fmt_unsigned_u: 

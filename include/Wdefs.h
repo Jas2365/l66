@@ -36,6 +36,9 @@
 
 typedef i8* va_list;
 #define va_align(n) (((n) + 7) & ~7)
+
+// va_args throw error when i rewrite it
+
 #define va_arg(ap, type)  \
                     ((sizeof(type) > 8) \
                         ? (**(type**)((ap += 8) -8)) \
