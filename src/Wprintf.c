@@ -164,7 +164,6 @@ f128 f128_get_val(va_list *args, i32 len_mod) {
    return (f128)va_arg(*args, f64);
 }
 
-
 i32 apply_padding(i8* buffer, i32 len, const fmt_spec_ptr_t spec, i32 is_negative) {
     if(len >= spec->width) return len; // no padding
 

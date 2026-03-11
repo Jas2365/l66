@@ -35,7 +35,6 @@
 //     printf("\n");
 // }
 null _start_c() {
-void _start_c() {
 
     f32 num = 1.3725489f;    
     u8* p = (u8*)&num;
