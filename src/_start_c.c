@@ -39,9 +39,20 @@ null _start_c() {
     u8* p = (u8*)&num;
 
     // printf("Little Endian (34 12) | big endian (12 34)\n");
-    
-    for(i32 i = 0; i < 16; i++)
+    i32 num2  = 0;
+    for(i32 i = 0; i < 4; i++){
         printf("%02x ", *(p+i));
+    }
+    printf("\n");
+
+    num2 = (*(p+3) << 8+8+8) | (*(p+2) << 8+8) | (*(p+1) << 8) |  (*(p));
+    printf("%#x ", num2);
+
+    printf("\n");
+
+    f64 num3 = 1.3725489;
+
+
    
     // printf("%x ", *p);
     // printf("%x ", *p+2);
