@@ -35,10 +35,23 @@
 // }
 void _start_c() {
 
+    f32 num = 1.3725489f;    
+    u8* p = (u8*)&num;
+
+    // printf("Little Endian (34 12) | big endian (12 34)\n");
+    
+    for(i32 i = 0; i < 16; i++)
+        printf("%02x ", *(p+i));
+   
+    // printf("%x ", *p);
+    // printf("%x ", *p+2);
+
+    printf("\n");
+
     // inspect_f128_bits();
 
     // printf("%zu", 0x7FFFFFFFFFFFFFFFULL);
-    printf("%a\n", 0.23L);
+    // printf("%La\n", 0.23L);
 
     // f64 kk = max_f32 + 13.8e10;
     // printf("aaaa %e | %e %Lf \n", 23.3, 3.4, 111.25124542151L);
