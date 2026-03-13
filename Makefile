@@ -8,12 +8,13 @@ cflags = \
 		 -fno-stack-protector \
 		 -fno-asynchronous-unwind-tables \
  
-ldflags = -n -s              \
+ldflags =               \
           -Wl,-e,_start_s     \
 		  -nostdlib -static    \
           -Wl,--gc-sections     \
           -Wl,--build-id=none    \
-		  -Wl,--subsystem,windows \
+          -Wl,--stack,1048576     \
+		  -Wl,--subsystem,windows  \
 
 as = as
 out = out

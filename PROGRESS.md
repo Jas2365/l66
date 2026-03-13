@@ -41,7 +41,7 @@ LeanAPI is a freestanding C standard library implementation for Windows x64 that
 - **Length Modifiers:**
   - Long: `l` (for `i32`/`u32` → `i64`/`u64`)
   - Long long: `ll` (for `i64`/`u64`)
-  - Size type: `z` (for `size_t`/`ssize_t`) - **NEW**
+  - Size type: `z` (for `s64`/`ss64`)
   
 - **Output:** Direct console I/O via Windows `WriteFile()` API
 
@@ -62,7 +62,7 @@ LeanAPI is a freestanding C standard library implementation for Windows x64 that
 - **Unsigned integers:** `u8`, `u16`, `u32`, `u64`
 - **Signed integers:** `i8`, `i16`, `i32`, `i64`
 - **Floating-point:** `f32`, `f64`
-- **Pointer types:** `size_t`, `ssize_t`, `uintptr_t`
+- **Pointer types:** `s64`, `ss64`, `uintptr_t`
 - **Boolean:** `boolean` (true/false)
 - **String utilities:** `const i8*` (null-terminated C strings)
 
@@ -164,7 +164,7 @@ LeanAPI is a freestanding C standard library implementation for Windows x64 that
 - Width and precision handling
 - Flag combinations
 - Memory allocation and deallocation
-- Size type (%z) for size_t and ssize_t
+- Size type (%z) for s64 and ss64
 - Console I/O on Windows
 - Buffer flushing and duplicate output fix
 

@@ -34,20 +34,22 @@
 // #define va_end(v)        __builtin_va_end(v)
 // removing builtin using macro
 
-typedef i8* va_list;
-#define va_align(n) (((n) + 7) & ~7)
 
 // va_args throw error when i rewrite it
 
-#define va_arg(ap, type)  \
-                    ((sizeof(type) > 8) \
-                        ? (**(type**)((ap += 8) -8)) \
-                        :  (*(type*)((ap += 8) -8)))
+// #define va_arg(ap, type)  \                                  commented out for not using long double more than 64 bits
+//                     ((sizeof(type) > 8) \ 
+//                         ? (**(type**)((ap += 8) -8)) \ 
+//                         :  (*(type*)((ap += 8) -8)))
+
+typedef i8* va_list;
+#define va_arg(ap, type) (*(type*)((ap += 8) -8))
+#define va_align(n) (((n) + 7) & ~7)
 #define va_start(ap, last)   (ap = (va_list)&(last) + va_align(sizeof(last)))
 #define va_end(ap)        (ap = (va_list)0)
 
 #define buf_size 2048
-#define tm_buf_size 1024
+#define temp_buffer_size 1024
 #define flush_buff_limit 768
 
 #define flag_left  '-'
@@ -87,7 +89,7 @@ typedef i8* va_list;
 #define len_l  'l'  // long
 #define len_ll 'l'  // longlong
 #define len_L  'L'  // double long
-#define len_z  'z'  // size_t
+#define len_z  'z'  // s64 
 #define len_j  'j'  // greates width integer
 #define len_t  't'  // pointer difference
 

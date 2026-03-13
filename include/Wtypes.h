@@ -93,6 +93,17 @@ typedef double      f64;
     #define max_intptr_t (9223372036854775807LL)
     #define min_ptrdiff_t (-9223372036854775807LL - 1)
     #define max_ptrdiff_t (9223372036854775807LL)
+
+    #define min_s64   (0)
+    #define max_s64   (18446744073709551615ULL)
+    #define min_ss64  (-9223372036854775807LL - 1)
+    #define max_ss64  (9223372036854775807LL)
+    #define min_up64  (0)
+    #define max_up64  (18446744073709551615ULL)
+    #define min_ip64  (-9223372036854775807LL - 1)
+    #define max_ip64  (9223372036854775807LL)
+    #define min_pd64  (-9223372036854775807LL - 1)
+    #define max_pd64  (9223372036854775807LL)
 #elif _WIN32
     typedef unsigned int   size_t;
     typedef signed   int   ssize_t;
@@ -116,6 +127,17 @@ typedef double      f64;
     #define max_intptr_t (2147483647)
     #define min_ptrdiff_t (-2147483648)
     #define max_ptrdiff_t (2147483647)
+    
+    #define min_s64   (0)
+    #define max_s64   (4294967295U)
+    #define min_ss64  (-2147483648)
+    #define max_ss64  (2147483647)
+    #define min_up64 (0)
+    #define max_up64 (4294967295U)
+    #define min_ip64 (-2147483648)
+    #define max_ip64 (2147483647)
+    #define min_pd64 (-2147483648)
+    #define max_pd64 (2147483647)
 #endif
 
 #if defined (__GNUC__) || defined(__clang__)

@@ -20,7 +20,7 @@
 
 __declspec(dllimport) null   __stdcall ExitProcess(u32 uExitCode);
 __declspec(dllimport) HANDLE __stdcall GetProcessHeap();
-__declspec(dllimport) null*  __stdcall HeapAlloc(HANDLE hHeap, DWORD dwFlags, size_t dwBytes);
+__declspec(dllimport) null*  __stdcall HeapAlloc(HANDLE hHeap, DWORD dwFlags, s64 dwBytes);
 __declspec(dllimport) BOOL   __stdcall HeapFree (HANDLE hHeap, DWORD dwFlags, null* lpMem);
 __declspec(dllimport) BOOL   __stdcall AllocConsole();
 __declspec(dllimport) HANDLE __stdcall GetStdHandle(DWORD nStdHandle);

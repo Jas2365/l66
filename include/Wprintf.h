@@ -15,12 +15,7 @@
  */
 
 #include "Wtypes.h"
-
-typedef struct fmt_spec {
-    i32 flags;
-    i32 width;
-    i32 precision;
-    i32 len_modifiers;
-} fmt_spec_t, *fmt_spec_ptr_t;
-            
+//
+// The GNU gcc compiler does the homing
+//
 i32 printf(const i8* format, ...);

@@ -51,23 +51,22 @@ null _start_c() {
     printf("\n");
 
     f64 num3 = 1.3725489;
-
-
-   
+  
     // printf("%x ", *p);
     // printf("%x ", *p+2);
-
+    
     printf("\n");
-
+    
+    // printf("%x %x %x\n", 23);
     // inspect_f128_bits();
 
-    // printf("%zu", 0x7FFFFFFFFFFFFFFFULL);
-    // printf("%La\n", 0.23L);
+    // printf("%zu\n", 0x7FFFFFFFFFFFFFFFULL);
+    // // printf("%La\n", 0.23L);
 
     // f64 kk = max_f32 + 13.8e10;
-    // printf("aaaa %e | %e %Lf \n", 23.3, 3.4, 111.25124542151L);
-    // printf("%d\n",printf("0%d\n",printf("%dss\n",printf("aaaa %e | %Lf \n",11.11, 3.15 ))));
-    // printf("%d\n",sizeof(f128));
+    // printf("aaaa %e | %e %f \n", 23.3, 3.4, 111.25124542151);
+    // printf("%d\n",printf("0%d\n",printf("%dss\n",printf("aaaa %e | %f \n",11.11, 3.15 ))));
+    // printf("%d\n",sizeof(f64));
     // printf("%d\n",23);
     // printf("%i\n",23);
     // printf("%f\n",23.0f);
@@ -81,6 +80,9 @@ null _start_c() {
     // i32 l = 0;
     // printf("123 %n\n", &l);
     // printf("%d\n", l);
+
+    printf("%d %d %d\n", 23, 33, 45);
+    printf("%s %c\n", "hello", 'w');
     pause();
 
     exit(exit_success);
