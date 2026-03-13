@@ -23,6 +23,11 @@ src = src
 inc = -Iinclude
 lib = -lkernel32
 target = $(out)/main.exe
+asm_out   = $(out)/assembly_output.txt
+asm_debug = $(out)/assembly_debug.txt
+objdump = objdump
+objdumpflags_out   = -d -M intel
+objdumpflags_debug = -S -M intel
 
 src_c = $(wildcard $(src)/*.c)
 src_s = $(wildcard $(src)/*.s)
@@ -47,7 +52,13 @@ $(out)/%.o: $(src)/%.s
 
 clean:
 	@if exist out\*.o del out\*.o 
+	@if exist out\*.txt del out\*.txt 
 	@if exist out\*.exe del /q out\*.exe
 
 run: clean all
 	./$(target)
+
+asm_out: all
+	$(objdump) $(objdumpflags_out) $(target) > $(asm_out)
+asm_debug: all
+	$(objdump) $(objdumpflags_debug) $(target) > $(asm_debug)

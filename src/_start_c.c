@@ -20,19 +20,7 @@
 #include "Wdefs.h"
 #include "Wprintf.h"
 #include "Wmath.h"
-// null inspect_f128_bits() {
-//     f128 test_val = 1.0L;
-//     u8 bytes[16];
-//     Wmemset(bytes, 0, 16);
-//     Wmemcpy(bytes, &test_val, 16);
 
-//     printf("Raw Bytes of 1.0L: ");
-//     for(i32 i = 0; i < 16; i++) {
-//         // Using your hex logic to see the raw memory
-//         printf("%02x ", bytes[i]);
-//     }
-//     printf("\n");
-// }
 null _start_c() {
 
     f32 num = 1.3725489f;    
@@ -47,6 +35,7 @@ null _start_c() {
 
     num2 = (*(p+3) << 8+8+8) | (*(p+2) << 8+8) | (*(p+1) << 8) |  (*(p));
     printf("%#x ", num2);
+    printf("%#X ", num2);
 
     printf("\n");
 
@@ -57,32 +46,34 @@ null _start_c() {
     
     printf("\n");
     
-    // printf("%x %x %x\n", 23);
-    // inspect_f128_bits();
+    printf("%x %x %x\n", 23);
 
-    // printf("%zu\n", 0x7FFFFFFFFFFFFFFFULL);
-    // // printf("%La\n", 0.23L);
+    printf("%zu\n", 0x7FFFFFFFFFFFFFFFULL);
 
-    // f64 kk = max_f32 + 13.8e10;
-    // printf("aaaa %e | %e %f \n", 23.3, 3.4, 111.25124542151);
-    // printf("%d\n",printf("0%d\n",printf("%dss\n",printf("aaaa %e | %f \n",11.11, 3.15 ))));
-    // printf("%d\n",sizeof(f64));
-    // printf("%d\n",23);
-    // printf("%i\n",23);
-    // printf("%f\n",23.0f);
-    // printf("%g\n",23.0f);
-    // printf("%e\n",23.0f);
-    // printf("%c\n",236);
-    // printf("%c\n",2365);
-    // printf("%ls\n",L"one");
-    // printf("%p\n",&kk);
-    // printf("%%\n",&kk);
-    // i32 l = 0;
-    // printf("123 %n\n", &l);
-    // printf("%d\n", l);
+    f64 kk = max_f32 + 13.8e10;
+    printf("aaaa %e | %e %f \n", 23.3, 3.4, 111.25124542151);
+    printf("%d\n",printf("0%d\n",printf("%dss\n",printf("aaaa %e | %f \n",11.11, 3.15 ))));
+    printf("%d\n",sizeof(f64));
+    printf("%d\n",23);
+    printf("%i\n",23);
+    printf("%f\n",23.0f);
+    printf("%g\n",23.0f);
+    printf("%e\n",23.0f);
+    printf("%c\n",236);
+    printf("%c\n",2365);
+    printf("%ls\n",L"one");
+    printf("%p\n",&kk);
+    printf("%%\n",&kk);
+    i32 l = 0;
+    printf("123 %n\n", &l);
+    printf("%d\n", l);
 
     printf("%d %d %d\n", 23, 33, 45);
     printf("%s %c\n", "hello", 'w');
+    printf("%qq %qnn\n", "hello", 'w');
+
+    printf("%*d\n",10, 5);
+
     pause();
 
     exit(exit_success);

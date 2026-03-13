@@ -24,7 +24,7 @@ typedef struct fmt_spec {
     i32 width;
     i32 precision;
     i32 len_modifiers;
-} fmt_spec_t, *fmt_spec_ptr_t;
+} fmtsp32;
 
 null flush_buffer(const i8* buffer, i32 len);
 
@@ -36,12 +36,12 @@ boolean is_modifer(const i8* p);
 //
 // Parse Format Specifier: %[flags][width][.precision][length specifier]
 //
-const i8* parse_fmt(const i8* p, fmt_spec_ptr_t spec, va_list args);
-null reset_fmt(fmt_spec_ptr_t spec);
+const i8* parse_fmt(const i8* p, fmtsp32* spec, va_list* args);
+null reset_fmt(fmtsp32* spec);
 
 u64 u64_get_val(va_list *args, i32 len_mod);
 f64 f64_get_val(va_list *args, i32 len_mod);
 
-i32 apply_padding(i8* buffer, i32 len, const fmt_spec_ptr_t spec, i32 is_negative);
+i32 apply_padding(i8* buffer, i32 len, const fmtsp32* spec, i32 is_negative);
 
-i32 f_util(i8* buf, fmt_spec_ptr_t spec);
+i32 f_util(i8* buf, fmtsp32* spec);

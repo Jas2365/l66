@@ -17,14 +17,7 @@
 #include "Wprintf_util.h"
 #include "Wwin.h"
 
-typedef struct fmt_spec {
-    i32 flags;
-    i32 width;
-    i32 precision;
-    i32 len_modifiers;
-} fmt_spec_t, *fmt_spec_ptr_t;
-
-null reset_fmt(fmt_spec_ptr_t spec) {
+null reset_fmt(fmtsp32* spec) {
     spec->flags = fmt_n;
     spec->width = 0;
     spec->precision = -1;
@@ -63,7 +56,7 @@ null flush_buffer(const i8* buffer, i32 len){
 //
 // Parse Format Specifier: %[flags][width][.precision][length specifier]
 //
-const i8* parse_fmt(const i8* p, fmt_spec_ptr_t spec, va_list args) {
+const i8* parse_fmt(const i8* p, fmtsp32* spec, va_list* args) {
     reset_fmt(spec);
 
     // flags
@@ -78,7 +71,7 @@ const i8* parse_fmt(const i8* p, fmt_spec_ptr_t spec, va_list args) {
 
     // width
     if(*p == dyn_width){
-        spec->width = va_arg(args, i32);
+        spec->width = va_arg(*args, i32);
         p++;
     } else {
         while(*p >= char_zero && *p <= char_nine){
@@ -92,7 +85,7 @@ const i8* parse_fmt(const i8* p, fmt_spec_ptr_t spec, va_list args) {
         p++;
         spec->precision = 0;
         if(*p == dyn_width) {
-            spec->precision = va_arg(args, i32);
+            spec->precision = va_arg(*args, i32);
             p++;
         } else {
             while(*p >= char_zero && *p <= char_nine) {
@@ -154,7 +147,7 @@ f64 f64_get_val(va_list *args, i32 len_mod) {
    return va_arg(*args, f64);
 }
 
-i32 apply_padding(i8* buffer, i32 len, const fmt_spec_ptr_t spec, i32 is_negative) {
+i32 apply_padding(i8* buffer, i32 len, const fmtsp32* spec, i32 is_negative) {
     if(len >= spec->width) return len; // no padding
 
     i32 total_len = spec->width;
@@ -197,7 +190,7 @@ i32 apply_padding(i8* buffer, i32 len, const fmt_spec_ptr_t spec, i32 is_negativ
     return total_len;
 }
 
-i32 f_util(i8* buf, fmt_spec_ptr_t spec) { 
+i32 f_util(i8* buf, fmtsp32* spec) { 
     i32 len = 0;
     if(spec->flags & fmt_plus) buf[len++] = char_plus;
     else if(spec->flags & fmt_space) buf[len++] = char_space;

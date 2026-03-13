@@ -39,7 +39,7 @@ i32 check_min(i8* buffer, i32 len) {
     return len;
 }
 
-i32 itos(u64 val, i8* buffer, i32 base, boolean uppercase) {
+i32 itos(u64 val, i8* buffer, i32 base, boolean capitalised) {
     if(val == 0) {
         buffer[0] = '0';
         return 1;
@@ -50,7 +50,7 @@ i32 itos(u64 val, i8* buffer, i32 base, boolean uppercase) {
 
     static i8 temp[itos_temp_size];
      
-    const i8* digits = uppercase ? upper_case_digits : lower_case_digits;
+    const i8* digits = capitalised ? upper_case_digits : lower_case_digits;
 
     while(val > 0 && i < itos_temp_size -1) {
         temp[i++] = digits[val % base];
@@ -120,7 +120,7 @@ i32 f64tos(f64 val, i8* buffer, i32 precision){
     return len;
 }
 
-i32 f32toes(f64 val, i8* buffer, i32 precision, boolean uppercase) {
+i32 f32toes(f64 val, i8* buffer, i32 precision, boolean capitalised) {
     i32 len = 0;
 
     if(val < 0) { buffer[len++] = '-'; val = -val; }
@@ -136,15 +136,15 @@ i32 f32toes(f64 val, i8* buffer, i32 precision, boolean uppercase) {
     }
     len += f32tos(val, buffer + len, precision);
 
-    buffer[len++] = uppercase ? 'E' : 'e';
+    buffer[len++] = capitalised ? 'E' : 'e';
     buffer[len++] = (ex >= 0) ? '+' : '-';
 
     i32 abs_ex = (ex < 0) ? -ex : ex;
     if(abs_ex < 10) buffer[len++] = '0';
-    len+= itos((u64)abs_ex, buffer + len, sys_decimal, uppercase);
+    len+= itos((u64)abs_ex, buffer + len, sys_decimal, capitalised);
     return len;
 }
-i32 f64toes(f64 val, i8* buffer, i32 precision, boolean uppercase) {
+i32 f64toes(f64 val, i8* buffer, i32 precision, boolean capitalised) {
     i32 len = 0;
     if(val < 0) { buffer[len++] = '-'; val = -val; }
     if(val != val)    return check_nan(buffer, len);
@@ -160,12 +160,12 @@ i32 f64toes(f64 val, i8* buffer, i32 precision, boolean uppercase) {
     }
     len += f64tos(val, buffer + len, precision);
 
-    buffer[len++] = uppercase ? 'E' : 'e';
+    buffer[len++] = capitalised ? 'E' : 'e';
     buffer[len++] = (ex >= 0) ? '+' : '-';
 
     i32 abs_ex = (ex < 0) ? -ex : ex;
     if(abs_ex < 10) buffer[len++] = '0';
-    len+= itos((u64)abs_ex, buffer + len, sys_decimal, uppercase);
+    len+= itos((u64)abs_ex, buffer + len, sys_decimal, capitalised);
     return len;
 }
 
@@ -244,7 +244,7 @@ i32 utf16_to_utf8(const w16 *wstr, i32 wlen, i8 *buf, i32 max_buf_len) {
 //     return len;
 // }
 
-// i32 f128toes(f128 val, i8* buffer, i32 precision, boolean uppercase) {
+// i32 f128toes(f128 val, i8* buffer, i32 precision, boolean capitalised) {
 //     i32 len = 0;
 
 //     if(val < 0.0L) { buffer[len++] = '-'; val = -val; }
@@ -260,16 +260,16 @@ i32 utf16_to_utf8(const w16 *wstr, i32 wlen, i8 *buf, i32 max_buf_len) {
 //     }
 //     len += f128tos(val, buffer + len, precision);
 
-//     buffer[len++] = uppercase ? 'E' : 'e';
+//     buffer[len++] = capitalised ? 'E' : 'e';
 //     buffer[len++] = (ex >= 0) ? '+' : '-';
 
 //     i32 abs_ex = (ex < 0) ? -ex : ex;
 //     if(abs_ex < 10) buffer[len++] = '0';
-//     len+= itos((u64)abs_ex, buffer + len, sys_decimal, uppercase);
+//     len+= itos((u64)abs_ex, buffer + len, sys_decimal, capitalised);
 //     return len;
 // }
 
-// i32 f128tohex(f128 val, i8 *buffer, i32 precision, boolean uppercase) {
+// i32 f128tohex(f128 val, i8 *buffer, i32 precision, boolean capitalised) {
 //     i32 len = 0;
 //     u8 bytes[16];
 //     Wmemset(bytes, NULL, sys_hex);
@@ -283,7 +283,7 @@ i32 utf16_to_utf8(const w16 *wstr, i32 wlen, i8 *buf, i32 max_buf_len) {
     
 //     // 0x
 //     buffer[len++] = char_zero;
-//     buffer[len++] = uppercase ? char_ux : char_lx;
+//     buffer[len++] = capitalised ? char_ux : char_lx;
 
 //     boolean is_msb_set = (mantissa >> 63) & 1; // bit 63 is the integer bit
 //     buffer[len++] = is_msb_set ? char_one : char_zero;
@@ -302,13 +302,13 @@ i32 utf16_to_utf8(const w16 *wstr, i32 wlen, i8 *buf, i32 max_buf_len) {
 //             // extract top 4 bits
 //             u8 hex_val = (u8)(fraction >> 60);
 //             buffer[len++] = (hex_val < 10) ? (hex_val + char_zero) 
-//             :(hex_val -10 + (uppercase ? char_ua: char_la));
+//             :(hex_val -10 + (capitalised ? char_ua: char_la));
 //             fraction <<= 4;
 //         }
 //     }
 
 //     // 5 exponent
-//     buffer[len++] = uppercase ? char_up : char_lp;
+//     buffer[len++] = capitalised ? char_up : char_lp;
 
 //     i32 true_exp;
 
