@@ -42,7 +42,7 @@ i32 printf(const i8* format, ...){
         }
 
         if(*p != char_format){
-            buf32.buffer[buf32.buffer_idx++] = *p;
+            buf32.buffer[buf32.buffer_idx++] = *p;               // this writes the normal string
             continue;
         }
         p++; //skip %
