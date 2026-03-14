@@ -80,17 +80,17 @@ typedef u64  um64; // uintmax_t
 
 // ----- size_t and uintptr_t -----
 #ifdef _WIN64
-    typedef unsigned long long   size_t;
-    typedef signed   long long   ssize_t;
-    typedef unsigned long long   uintptr_t;
-    typedef signed   long long   intptr_t;
-    typedef signed   long long   ptrdiff_t;
+    typedef u64   size_t;
+    typedef i64   ssize_t;
+    typedef u64   uintptr_t;
+    typedef i64   intptr_t;
+    typedef i64   ptrdiff_t;
 
-    typedef unsigned long long   s64;   // size_t
-    typedef signed   long long   ss64;  // ssize_t
-    typedef unsigned long long   up64;  // uintptr_t
-    typedef signed   long long   ip64;  // intptr_t
-    typedef signed   long long   pd64;  // ptrdiff_t
+    typedef u64   s64;   // size_t
+    typedef i64   ss64;  // ssize_t
+    typedef u64   up64;  // uintptr_t
+    typedef i64   ip64;  // intptr_t
+    typedef i64   pd64;  // ptrdiff_t
     
     #define min_size_t      (0)
     #define max_size_t      (18446744073709551615ULL)
@@ -114,17 +114,17 @@ typedef u64  um64; // uintmax_t
     #define min_pd64  (-9223372036854775807LL - 1)
     #define max_pd64  (9223372036854775807LL)
 #elif _WIN32
-    typedef unsigned int   size_t;
-    typedef signed   int   ssize_t;
-    typedef unsigned int   uintptr_t;
-    typedef signed   int   intptr_t;
-    typedef signed   int   ptrdiff_t;
+    typedef u32   size_t;
+    typedef i32   ssize_t;
+    typedef u32   uintptr_t;
+    typedef i32   intptr_t;
+    typedef i32   ptrdiff_t;
     
-    typedef unsigned int   s64;
-    typedef signed   int   ss64;
-    typedef unsigned int   up64;
-    typedef signed   int   ip64;
-    typedef signed   int   pd64;
+    typedef u32   s64;
+    typedef i32   ss64;
+    typedef u32   up64;
+    typedef i32   ip64;
+    typedef i32   pd64;
     
     #define min_size_t   (0)
     #define max_size_t   (4294967295U)

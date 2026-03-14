@@ -145,7 +145,6 @@ f64 f64_get_val(va_list *args, i32 len_mod) {
 }
 
 i32 handle_precision(buffer32* buf32, const fmtsp32* spec, fmt64* fmt_vals) {
-
     if(spec->precision > fmt_vals->written) {
         fmt_vals->zeros_to_add = spec->precision - fmt_vals->written;
         // shifting
