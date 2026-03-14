@@ -22,9 +22,11 @@ src = src
 
 inc = -Iinclude
 lib = -lkernel32
+
 target = $(out)/main.exe
 asm_out   = $(out)/assembly_output.txt
 asm_debug = $(out)/assembly_debug.txt
+
 objdump = objdump
 objdumpflags_out   = -d -M intel
 objdumpflags_debug = -S -M intel

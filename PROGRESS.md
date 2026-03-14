@@ -21,6 +21,7 @@ LeanAPI is a freestanding C standard library implementation for Windows x64 that
   - Integer: `%d`, `%i`, `%u`
   - Floating-point: `%f`, `%e`, `%E`, `%g`, `%G`
   - Hex/Octal: `%x`, `%X`, `%o`
+  - Floating Hex: `%a`, `%A`
   - Pointer: `%p`
   - Character/String: `%c`, `%s`
   - Literal: `%%`
@@ -39,7 +40,7 @@ LeanAPI is a freestanding C standard library implementation for Windows x64 that
   - Dynamic precision via `*` (e.g., `%.*f`)
   
 - **Length Modifiers:**
-  - Long: `l` (for `i32`/`u32` → `i64`/`u64`)
+  - Long: `l` (for `i32`/`u32`/`f32` → `i64`/`u64`/`f64`)
   - Long long: `ll` (for `i64`/`u64`)
   - Size type: `z` (for `s64`/`ss64`)
   
@@ -48,6 +49,8 @@ LeanAPI is a freestanding C standard library implementation for Windows x64 that
 #### 2. **Memory Management**
 - `malloc()` - Allocates memory using Windows process heap
 - `free()` - Deallocates memory from process heap
+- `memcpy()`- minimal memory copy 
+- `memset()`- minimal memory set
 - Direct `GetProcessHeap()` integration
 - Efficient heap-based allocation without MSVCRT
 
@@ -223,6 +226,8 @@ While several advanced features remain unimplemented, the core functionality is 
 **Memory Management**
 - `malloc`: Wraps `HeapAlloc` against the process heap
 - `free`: Wraps `HeapFree` against the process heap
+- `memcpy()`- minimal memory copy 
+- `memset()`- minimal memory set
 
 **I/O**
 - `stdout`: Mapped to `GetStdHandle(STD_OUTPUT_HANDLE)`
