@@ -25,7 +25,33 @@ typedef struct fmt_spec {
     i32 precision;
     i32 len_modifiers;
 } fmtsp32;
+typedef struct Buffer_Struct {
+    i8 buffer[buf_size];
+    i8 temp_buffer[temp_buffer_size];
+    i32 buffer_idx;
+    i32 total_written;
+} buffer32;
 
+typedef struct format_values {
+  boolean   is_negative;
+      w16   wchar;
+      i32   temp_idx;
+      i32   wlen;
+      i32   max_char;
+      i32   max_wchar;
+      i32   digit_start;
+      i32   written;
+      i32   zeros_to_add;
+      i32   prec;
+      u64   val;
+      i64   sval;
+      f64   absv;
+      f64   valld;
+const i8*   str;
+const w16*  wstr;
+      i32*  iptr;
+      null* vptr;
+}fmt64;
 null flush_buffer(const i8* buffer, i32 len);
 
 
@@ -41,7 +67,7 @@ null reset_fmt(fmtsp32* spec);
 
 u64 u64_get_val(va_list *args, i32 len_mod);
 f64 f64_get_val(va_list *args, i32 len_mod);
-
+i32 handle_precision(buffer32* buf32, const fmtsp32* spec, fmt64* fmt_vals);
 i32 apply_padding(i8* buffer, i32 len, const fmtsp32* spec, i32 is_negative);
 
 i32 f_util(i8* buf, fmtsp32* spec);

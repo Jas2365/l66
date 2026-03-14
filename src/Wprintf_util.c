@@ -140,11 +140,26 @@ u64 u64_get_val(va_list *args, i32 len_mod) {
 }
 
 f64 f64_get_val(va_list *args, i32 len_mod) {
-    // if(len_mod == fmt_l){
-    //     return va_arg(*args, f64);
-    // }
     // the caller promoted float to a double     
    return va_arg(*args, f64);
+}
+
+i32 handle_precision(buffer32* buf32, const fmtsp32* spec, fmt64* fmt_vals) {
+
+    if(spec->precision > fmt_vals->written) {
+        fmt_vals->zeros_to_add = spec->precision - fmt_vals->written;
+        // shifting
+        for(i32 i = fmt_vals->written -1; i>=0; i--){
+            buf32->temp_buffer[fmt_vals->digit_start +i +fmt_vals->zeros_to_add] = buf32->temp_buffer[fmt_vals->digit_start +i];
+        }   
+        // fill
+        for(i32 i = 0; i<fmt_vals->zeros_to_add; i++){
+            buf32->temp_buffer[fmt_vals->digit_start +i] = char_zero;
+        }
+        return spec->precision;
+    } else { 
+        return fmt_vals->written;
+    }
 }
 
 i32 apply_padding(i8* buffer, i32 len, const fmtsp32* spec, i32 is_negative) {

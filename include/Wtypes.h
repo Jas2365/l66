@@ -21,13 +21,13 @@ typedef void null;
 // ----- boolean  ------------
 typedef bool boolean;
 
-// ----- unsigned -----
+// ----- unsigned integer -----
 typedef unsigned char       u8;
 typedef unsigned short      u16;
 typedef unsigned int        u32;
 typedef unsigned long long  u64;
 
-// ----- signed -----
+// ----- signed integer -----
 typedef char       i8;
 typedef short      i16;
 typedef int        i32;
@@ -36,6 +36,15 @@ typedef long long  i64;
 // ----- floating point ------
 typedef float       f32;
 typedef double      f64;
+
+// ----- additional types -----
+typedef unsigned short      wchar_t;
+typedef long long           intmax_t;
+typedef unsigned long long  uintmax_t;
+
+typedef unsigned short      w16;  // wchar_t
+typedef long long           m64;  // intmax_t
+typedef unsigned long long  um64; // uintmax_t
 
 // windows x87 hardware uses SSE2 only supports 32-bit and 64-bit floats
 // typedef long double f128; 
@@ -139,23 +148,6 @@ typedef double      f64;
     #define min_pd64 (-2147483648)
     #define max_pd64 (2147483647)
 #endif
-
-#if defined (__GNUC__) || defined(__clang__)
-    typedef __SIZE_TYPE__ size_t;
-#elif defined(_MSC_VER)
-    typedef unsigned __int64 size_t;
-#else
-    typedef unsigned long size_t;
-#endif
-
-// ----- additional types -----
-typedef unsigned short      wchar_t;
-typedef long long           intmax_t;
-typedef unsigned long long  uintmax_t;
-
-typedef unsigned short      w16;  // wchar_t
-typedef long long           m64;  // intmax_t
-typedef unsigned long long  um64; // uintmax_t
 
 #define min_intmax_t  (-9223372036854775807LL - 1)
 #define max_intmax_t  (9223372036854775807LL)

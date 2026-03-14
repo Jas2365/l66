@@ -88,7 +88,7 @@ typedef i8* va_list;
 #define len_hh 'h'  // char
 #define len_l  'l'  // long
 #define len_ll 'l'  // longlong
-#define len_L  'L'  // double long
+// #define len_L  'L'  // double long                   diabled double long
 #define len_z  'z'  // s64 
 #define len_j  'j'  // greates width integer
 #define len_t  't'  // pointer difference
@@ -147,8 +147,8 @@ enum fmt_modifers: i32 {
     fmt_hh = 0x02, // character
     fmt_l  = 0x04, // long = 32bit on 64 bit
     fmt_ll = 0x08, // long 64
-    fmt_L  = 0x10, // for floats
-    fmt_z  = 0x20, // sizet
-    fmt_j  = 0x40, // greates width integer
-    fmt_t  = 0x80, // pointer difference
+    fmt_z  = 0x10, // sizet
+    fmt_j  = 0x20, // greates width integer
+    fmt_t  = 0x40, // pointer difference
+    // fmt_L  = 0x80, // for floats                     disabled double long
 };

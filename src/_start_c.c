@@ -67,13 +67,17 @@ null _start_c() {
     i32 l = 0;
     printf("123 %n\n", &l);
     printf("%d\n", l);
-
+    
     printf("%d %d %d\n", 23, 33, 45);
     printf("%s %c\n", "hello", 'w');
     printf("%qq %qnn\n", "hello", 'w');
-
+    
     printf("%*d\n",10, 5);
-
+    
+    printf("%d \n\n", 23);
+    printf("%.8d %-8d \n\n", 2365, 2365);
+    printf("%-20f %-20f %n \n", 23.0, 23.0, &l);
+    printf("l: %d\n", l);
     pause();
 
     exit(exit_success);

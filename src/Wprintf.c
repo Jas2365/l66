@@ -81,48 +81,20 @@ i32 printf(const i8* format, ...){
         switch (*p) {
         case fmt_integer_i : // %i and %d behave the same in printf
         case fmt_decimal_d :
-            fmt_vals.val = u64_get_val(&args, spec.len_modifiers);
-            fmt_vals.sval = (i64)fmt_vals.val;
-            if(fmt_vals.sval < 0) {
-                buf32.temp_buffer[fmt_vals.temp_idx++] = char_minus;
-                fmt_vals.is_negative = true;
-                fmt_vals.val = (u64)-(fmt_vals.sval);
-            } else {
-                if(spec.flags & fmt_plus) buf32.temp_buffer[fmt_vals.temp_idx++] = char_plus;
-                else if(spec.flags & fmt_space) buf32.temp_buffer[fmt_vals.temp_idx++] = char_space;
-            }
-            fmt_vals.digit_start = fmt_vals.temp_idx;
-            fmt_vals.written += itos((u64)fmt_vals.val, buf32.temp_buffer + fmt_vals.temp_idx, sys_decimal, lower_case);
-            if(spec.precision > fmt_vals.written) {
-                fmt_vals.zeros_to_add = spec.precision - fmt_vals.written;
-                // shifting
-                for(i32 i = fmt_vals.written -1; i>=0; i--){
-                    buf32.temp_buffer[fmt_vals.digit_start +i + fmt_vals.zeros_to_add] = buf32.temp_buffer[fmt_vals.digit_start+i];
-                }
-                // fill
-                for(i32 i = 0; i <fmt_vals.zeros_to_add; i++){
-                    buf32.temp_buffer[fmt_vals.digit_start + i] = char_zero;
-                }
-                fmt_vals.temp_idx += spec.precision;
-            } else fmt_vals.temp_idx += fmt_vals.written;
+            print_fmt_decimal_d(&args, &fmt_vals, &buf32, &spec);
             break;
         case fmt_floating_f:
-            fmt_vals.valld = f64_get_val(&args, spec.len_modifiers);
-            if(fmt_vals.valld < 0.0L) { buf32.temp_buffer[fmt_vals.temp_idx++] = char_minus;  fmt_vals.valld = -fmt_vals.valld; } 
-            fmt_vals.temp_idx += f_util(buf32.temp_buffer + fmt_vals.temp_idx, &spec);
-            fmt_vals.prec = (spec.precision >= 0) ? spec.precision : default_precision;            
-            fmt_vals.temp_idx += f64tos(fmt_vals.valld, buf32.temp_buffer + fmt_vals.temp_idx, fmt_vals.prec);
+            print_fmt_floating_f(&args, &fmt_vals, &buf32, &spec);
             break;
         case fmt_exponent_le:
+            print_fmt_exponent_e(&args, &fmt_vals, &buf32, &spec, lower_case);
+            break;
         case fmt_exponent_ue: 
-            fmt_vals.valld = f64_get_val(&args, spec.len_modifiers);
-            if(fmt_vals.valld < 0.0L) { buf32.temp_buffer[fmt_vals.temp_idx++] = char_minus;  fmt_vals.valld = -fmt_vals.valld; } 
-            fmt_vals.temp_idx += f_util(buf32.temp_buffer + fmt_vals.temp_idx, &spec);
-            fmt_vals.prec = (spec.precision >= 0) ? spec.precision : default_precision;
-            fmt_vals.temp_idx += f64toes(fmt_vals.valld, buf32.temp_buffer + fmt_vals.temp_idx, fmt_vals.prec, (*p == 'E'));
+            print_fmt_exponent_e(&args, &fmt_vals, &buf32, &spec, upper_case);
             break;
         case fmt_generic_lg:
             print_fmt_generic_g(&args, &fmt_vals, &buf32, &spec, lower_case);
+            break;
         case fmt_generic_ug: 
             print_fmt_generic_g(&args, &fmt_vals, &buf32, &spec, upper_case);
             break;
@@ -171,20 +143,57 @@ i32 printf(const i8* format, ...){
     return end_printf(&buf32, &args);
 }
 
+null print_fmt_decimal_d(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp32 *spec) {
+
+    fmt_vals->val = u64_get_val(args, spec->len_modifiers);
+    fmt_vals->sval = (i64)fmt_vals->val;
+    if(fmt_vals->sval < 0) {
+        buf32->temp_buffer[fmt_vals->temp_idx++] = char_minus;
+        fmt_vals->is_negative = true;
+        fmt_vals->val = (u64)-(fmt_vals->sval);
+    } else {
+        if(spec->flags & fmt_plus) buf32->temp_buffer[fmt_vals->temp_idx++] = char_plus;
+        else if(spec->flags & fmt_space) buf32->temp_buffer[fmt_vals->temp_idx++] = char_space;
+    }
+    fmt_vals->digit_start = fmt_vals->temp_idx;
+    fmt_vals->written += itos((u64)fmt_vals->val, buf32->temp_buffer + fmt_vals->temp_idx, sys_decimal, lower_case);
+    fmt_vals->temp_idx += handle_precision(buf32, spec, fmt_vals);
+}
+
+null print_fmt_floating_f(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp32 *spec)
+{
+    fmt_vals->valld = f64_get_val(args, spec->len_modifiers);
+    if(fmt_vals->valld <0.0) {buf32->temp_buffer[fmt_vals->temp_idx++] = char_minus;
+    fmt_vals->valld = -fmt_vals->valld; }
+    fmt_vals->temp_idx += f_util(buf32->temp_buffer+fmt_vals->temp_idx, spec);
+    fmt_vals->prec = (spec->precision >= 0) ?spec->precision :default_precision;
+    fmt_vals->digit_start = fmt_vals->temp_idx;
+    fmt_vals->temp_idx += f64tos(fmt_vals->valld, buf32->temp_buffer+fmt_vals->temp_idx, fmt_vals->prec);
+
+}
+
+null print_fmt_exponent_e(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp32 *spec, boolean capitalised) {
+    fmt_vals->valld = f64_get_val(args, spec->len_modifiers);
+    if(fmt_vals->valld <0.0) {buf32->temp_buffer[fmt_vals->temp_idx++] = char_minus;
+    fmt_vals->valld = -fmt_vals->valld; }
+    fmt_vals->temp_idx += f_util(buf32->temp_buffer+fmt_vals->temp_idx, spec);
+    fmt_vals->prec = (spec->precision >= 0) ? spec->precision : default_precision;
+    fmt_vals->temp_idx += f64toes(fmt_vals->valld, buf32->temp_buffer + fmt_vals->temp_idx, fmt_vals->prec, capitalised);
+}
+
 null print_fmt_generic_g(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp32 *spec, boolean capitalised) {
     fmt_vals->valld = f64_get_val(args, spec->len_modifiers);
-    if(fmt_vals->valld <0.0L) {buf32->temp_buffer[fmt_vals->temp_idx++] = char_minus;
+    if(fmt_vals->valld <0.0) {buf32->temp_buffer[fmt_vals->temp_idx++] = char_minus;
     fmt_vals->valld = -fmt_vals->valld;}
     fmt_vals->temp_idx += f_util(buf32->temp_buffer+fmt_vals->temp_idx, spec);
     fmt_vals->prec = (spec->precision>=0) ? spec->precision : default_precision;
-    fmt_vals->absv = (fmt_vals->valld < 0.0L) ? -fmt_vals->valld : fmt_vals->valld;
-    if(fmt_vals->absv != 0.0 && fmt_vals->absv >= 1000000.0L || fmt_vals->absv < 0.0001L) {
+    fmt_vals->absv = (fmt_vals->valld < 0.0) ? -fmt_vals->valld : fmt_vals->valld;
+    if(fmt_vals->absv != 0.0 && fmt_vals->absv >= 1000000.0 || fmt_vals->absv < 0.0001) {
         fmt_vals->temp_idx += f64toes(fmt_vals->valld, buf32->temp_buffer+fmt_vals->temp_idx, fmt_vals->prec-1, capitalised);
     } else fmt_vals->temp_idx += f64tos(fmt_vals->valld, buf32->temp_buffer + fmt_vals->temp_idx, spec->precision);
 }
 
-null print_fmt_unsigned_u(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp32 *spec)
-{
+null print_fmt_unsigned_u(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp32 *spec) {
     fmt_vals->val = u64_get_val(args, spec->len_modifiers);
     fmt_vals->digit_start = fmt_vals->temp_idx;
     fmt_vals->written += itos(fmt_vals->val, buf32->temp_buffer+fmt_vals->temp_idx, sys_decimal, lower_case);
@@ -201,8 +210,7 @@ null print_fmt_unsigned_u(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp
     } else fmt_vals->temp_idx += fmt_vals->written;
 }
 
-null print_fmt_hexadecimal_x(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp32 *spec, boolean capitalised)
-{
+null print_fmt_hexadecimal_x(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp32 *spec, boolean capitalised) {
     fmt_vals->val = u64_get_val(args, spec->len_modifiers);
     if ((spec->flags & fmt_alt) && fmt_vals->val != 0) {
         buf32->temp_buffer[fmt_vals->temp_idx++] = char_zero;
