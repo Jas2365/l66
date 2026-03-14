@@ -35,14 +35,14 @@ i32 check_nan(i8* buffer, i32 len);
 i32 check_max(i8* buffer, i32 len);
 i32 check_min(i8* buffer, i32 len);
 
-i32 itos(u64 val, i8* buffer, i32 base, boolean uppercase);
+i32 itos(u64 val, i8* buffer, i32 base, boolean capitalised);
 
 i32 f32tos(f64 val, i8* buffer, i32 precision);
 i32 f64tos(f64 val, i8* buffer, i32 precision);
 
 
-i32 f32toes(f64 val, i8* buffer, i32 precision, boolean uppercase);
-i32 f64toes(f64 val, i8* buffer, i32 precision, boolean uppercase);
+i32 f32toes(f64 val, i8* buffer, i32 precision, boolean capitalised);
+i32 f64toes(f64 val, i8* buffer, i32 precision, boolean capitalised);
 
 
 i32 utf16_to_utf8(const w16* wstr, i32 wlen, i8* buf, i32 max_buf_len);

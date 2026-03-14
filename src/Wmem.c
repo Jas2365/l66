@@ -26,7 +26,7 @@ null free(null* ptr){
     if(ptr) HeapFree(GetProcessHeap(), NULL, ptr);
 }
 
-null Wmemcpy(null* dest, const null* src, i32 count) {
+null memcpy(null* dest, const null* src, i32 count) {
     i8* d = (i8*)dest;
     const i8* s = (const i8*)src;
     while(count--){
@@ -34,7 +34,7 @@ null Wmemcpy(null* dest, const null* src, i32 count) {
     }
 }
 
-null Wmemset(null* dest, i8 val, i32 count) {
+null memset(null* dest, i8 val, i32 count) {
     i8* d = (i8*)dest;
     while(count--){
         *d++ = val;

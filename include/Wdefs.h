@@ -22,25 +22,11 @@
 #define exit_failure 1
 
 #define INVALID_HANDLE_VALUE ((HANDLE)(uintptr_t)-1)
-#define STD_OUTPUT_HANDLE ((DWORD)-11)
-#define STD_INPUT_HANDLE ((DWORD)-10)
+#define STD_OUTPUT_HANDLE    ((DWORD)-11)
+#define STD_INPUT_HANDLE     ((DWORD)-10)
 
 #define stdout GetStdHandle(STD_OUTPUT_HANDLE)
 #define stdin  GetStdHandle(STD_INPUT_HANDLE)
-
-// typedef __builtin_va_list va_list;
-// #define va_start(v, l)   __builtin_va_start(v,l)
-// #define va_arg(v, t)     __builtin_va_arg(v, t)
-// #define va_end(v)        __builtin_va_end(v)
-// removing builtin using macro
-
-
-// va_args throw error when i rewrite it
-
-// #define va_arg(ap, type)  \                                  commented out for not using long double more than 64 bits
-//                     ((sizeof(type) > 8) \ 
-//                         ? (**(type**)((ap += 8) -8)) \ 
-//                         :  (*(type*)((ap += 8) -8)))
 
 typedef i8* va_list;
 #define va_arg(ap, type) (*(type*)((ap += 8) -8))
@@ -96,7 +82,17 @@ typedef i8* va_list;
 #define lower_case false
 #define upper_case true
 
-#define default_precision ( 6 ) 
+#define default_precision (i32)( 6 ) 
+#define absv_high         (f64)( 1000000.0 )
+#define absv_low          (f64)( 0.0001 )
+#define zero_f64          (f64)( 0.0 )
+#define zero_precision    (i32)( 0 )
+#define zero_u64          (u64)( 0 )
+
+#define size_32_bytes     (i32)( 4 )
+#define size_64_bytes     (i32)( 8 )
+#define f32_start         (i32)( size_32_bytes -1 )
+#define f64_start         (i32)( size_64_bytes -1 )
 
 #define fmt_integer_i       'i'
 #define fmt_decimal_d       'd'

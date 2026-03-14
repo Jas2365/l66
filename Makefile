@@ -8,7 +8,7 @@ cflags = \
 		 -fno-stack-protector \
 		 -fno-asynchronous-unwind-tables \
  
-ldflags =               \
+ldflags = -n -s              \
           -Wl,-e,_start_s     \
 		  -nostdlib -static    \
           -Wl,--gc-sections     \

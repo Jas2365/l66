@@ -21,5 +21,5 @@
 
 null* malloc(s64 size);
 null free(null* ptr);
-null Wmemcpy(null* dest, const null* src, i32 count);
-null Wmemset(null* dest, i8 val, i32 count);
+null memcpy(null* dest, const null* src, i32 count);
+null memset(null* dest, i8 val, i32 count);

@@ -18,6 +18,8 @@
 #include "Wdefs.h"
 #include "Wprintf_util.h"
 
+#include "Wmem.h"
+
 //
 // The GNU gcc compiler does the homing
 //
@@ -30,6 +32,7 @@ null print_fmt_decimal_d(va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp3
 null print_fmt_floating_f(va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec);
 null print_fmt_exponent_e(va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec, boolean capitalised);
 null print_fmt_generic_g (va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec, boolean capitalised);
+null print_fmt_hexfloat_a(va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec, boolean capitalised);
 null print_fmt_unsigned_u(va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec);
 null print_fmt_hexadecimal_x(va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec, boolean capitalised);
 null print_fmt_octal_o(va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec);

@@ -43,10 +43,14 @@ typedef struct format_values {
       i32   written;
       i32   zeros_to_add;
       i32   prec;
+      f32   valf;
       u64   val;
       i64   sval;
       f64   absv;
-      f64   valld;
+      f64   vallf;
+      u8    bytes32[size_32_bytes];
+      u8    bytes64[size_64_bytes];
+      u8*   aptr;
 const i8*   str;
 const w16*  wstr;
       i32*  iptr;

@@ -38,13 +38,13 @@ typedef float       f32;
 typedef double      f64;
 
 // ----- additional types -----
-typedef unsigned short      wchar_t;
-typedef long long           intmax_t;
-typedef unsigned long long  uintmax_t;
+typedef u16  wchar_t;
+typedef i64  intmax_t;
+typedef u64  uintmax_t;
 
-typedef unsigned short      w16;  // wchar_t
-typedef long long           m64;  // intmax_t
-typedef unsigned long long  um64; // uintmax_t
+typedef u16  w16;  // wchar_t
+typedef i64  m64;  // intmax_t
+typedef u64  um64; // uintmax_t
 
 // windows x87 hardware uses SSE2 only supports 32-bit and 64-bit floats
 // typedef long double f128; 
@@ -92,16 +92,16 @@ typedef unsigned long long  um64; // uintmax_t
     typedef signed   long long   ip64;  // intptr_t
     typedef signed   long long   pd64;  // ptrdiff_t
     
-    #define min_size_t   (0)
-    #define max_size_t   (18446744073709551615ULL)
-    #define min_ssize_t  (-9223372036854775807LL - 1)
-    #define max_ssize_t  (9223372036854775807LL)
-    #define min_uintptr_t (0)
-    #define max_uintptr_t (18446744073709551615ULL)
-    #define min_intptr_t (-9223372036854775807LL - 1)
-    #define max_intptr_t (9223372036854775807LL)
-    #define min_ptrdiff_t (-9223372036854775807LL - 1)
-    #define max_ptrdiff_t (9223372036854775807LL)
+    #define min_size_t      (0)
+    #define max_size_t      (18446744073709551615ULL)
+    #define min_ssize_t     (-9223372036854775807LL - 1)
+    #define max_ssize_t     (9223372036854775807LL)
+    #define min_uintptr_t   (0)
+    #define max_uintptr_t   (18446744073709551615ULL)
+    #define min_intptr_t    (-9223372036854775807LL - 1)
+    #define max_intptr_t    (9223372036854775807LL)
+    #define min_ptrdiff_t   (-9223372036854775807LL - 1)
+    #define max_ptrdiff_t   (9223372036854775807LL)
 
     #define min_s64   (0)
     #define max_s64   (18446744073709551615ULL)

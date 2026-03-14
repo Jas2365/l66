@@ -272,8 +272,8 @@ i32 utf16_to_utf8(const w16 *wstr, i32 wlen, i8 *buf, i32 max_buf_len) {
 // i32 f128tohex(f128 val, i8 *buffer, i32 precision, boolean capitalised) {
 //     i32 len = 0;
 //     u8 bytes[16];
-//     Wmemset(bytes, NULL, sys_hex);
-//     Wmemcpy(bytes, &val, sys_hex);
+//     memset(bytes, NULL, sys_hex);
+//     memcpy(bytes, &val, sys_hex);
 //     // extract bytes based on your raw byte observation
 //     // mantissa is bytes 0-7,exponent is bytes 8-9
     

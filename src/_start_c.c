@@ -78,6 +78,34 @@ null _start_c() {
     printf("%.8d %-8d \n\n", 2365, 2365);
     printf("%-20f %-20f %n \n", 23.0, 23.0, &l);
     printf("l: %d\n", l);
+
+
+
+    f32 ff = 0.10;
+    f64 fff = 0.10;
+
+    printf("ff : %.2f\n", ff);
+
+    u8* ptr = (u8*)&ff;
+    for(i32 i = 7; i >= 0; i--)
+    printf("%02x ", *(ptr+i));
+    printf("\n");
+    
+    u8 bytes[8];
+    memset(bytes, 0, 8);
+    memcpy(bytes, &ff, 8);
+    
+    for(i32 i = 7; i >= 0; i--)
+    printf("%02x ", bytes[i]);
+    printf("\n");
+    
+    u64* mm = (u64*)&bytes;
+
+    printf("x : %x \n", *mm);
+    printf("A : %a \n", ff);
+    printf("A : %la \n", fff);
+    printf("A : %a \n", fff);
+    
     pause();
 
     exit(exit_success);
