@@ -25,8 +25,8 @@ i32 printf(const i8* format, ...){
     va_list args;
 
     buffer32 buf32 = {
-        .buffer = NULL,
-        .temp_buffer = NULL,
+        .buffer = VOID,
+        .temp_buffer = VOID,
         .buffer_idx = 0,
         .total_written = 0
     };

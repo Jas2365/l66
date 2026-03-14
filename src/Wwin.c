@@ -26,14 +26,14 @@ null print_console(const char* str) {
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     if(hOut != INVALID_HANDLE_VALUE) {
         DWORD written;
-        WriteFile(hOut, str,len,&written, NULL);
+        WriteFile(hOut, str,len,&written, VOID);
     }
 }
 
 null read_console(u32 size) {
     char buffer[size];
     DWORD read;
-    ReadFile(GetStdHandle(STD_INPUT_HANDLE), buffer, size, &read, NULL);
+    ReadFile(GetStdHandle(STD_INPUT_HANDLE), buffer, size, &read, VOID);
 }
 
 null pause(){

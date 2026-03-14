@@ -18,12 +18,12 @@
 
 null* malloc(s64 size) {
     HANDLE heap = GetProcessHeap();
-    if(!heap) return NULL;
-    return HeapAlloc(GetProcessHeap(), NULL, size);
+    if(!heap) return VOID;
+    return HeapAlloc(GetProcessHeap(), VOID, size);
 }
 
 null free(null* ptr){
-    if(ptr) HeapFree(GetProcessHeap(), NULL, ptr);
+    if(ptr) HeapFree(GetProcessHeap(), VOID, ptr);
 }
 
 null memcpy(null* dest, const null* src, i32 count) {

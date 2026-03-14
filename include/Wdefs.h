@@ -17,7 +17,7 @@
 #pragma once
 #include "Wtypes.h"
 
-#define NULL 0LL
+#define VOID 0LL
 #define exit_success 0
 #define exit_failure 1
 

@@ -49,7 +49,7 @@ boolean is_modifer(const i8* p) {
 null flush_buffer(const i8* buffer, i32 len){
     if(len > 0){
         u32 written = 0;
-        WriteFile(stdout, buffer, len, &written, NULL);
+        WriteFile(stdout, buffer, len, &written, VOID);
     }
 }
 
