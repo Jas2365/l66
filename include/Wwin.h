@@ -18,15 +18,28 @@
 #include "Wtypes.h"
 #include "Wdefs.h"
 
-__declspec(dllimport) null   __stdcall ExitProcess(u32 uExitCode);
-__declspec(dllimport) HANDLE __stdcall GetProcessHeap();
-__declspec(dllimport) null*  __stdcall HeapAlloc(HANDLE hHeap, DWORD dwFlags, s64 dwBytes);
-__declspec(dllimport) BOOL   __stdcall HeapFree (HANDLE hHeap, DWORD dwFlags, null* lpMem);
-__declspec(dllimport) BOOL   __stdcall AllocConsole();
-__declspec(dllimport) HANDLE __stdcall GetStdHandle(DWORD nStdHandle);
-__declspec(dllimport) BOOL   __stdcall WriteFile(HANDLE hFile, const null* lpBuffer, DWORD nNumberOfBytesToWrite, DWORD* lpNumberOfBytesWritten, null* lpOverlapped);
-__declspec(dllimport) BOOL   __stdcall ReadFile(HANDLE hFile, const null* lpbuffer, DWORD nNumberOfBytesToRead, DWORD* lpNumberOfBytesRead, null* lpOverlapped);
+// ----- win types -----
+typedef null *HANDLE;
+typedef null *HWND;
+typedef null *HINSTANCE;
+typedef u32   DWORD;
+typedef i32   BOOL;
 
+// ----- win declaration -----
+WINBASEAPI null   WINAPI ExitProcess(u32 uExitCode);
+
+WINBASEAPI HANDLE WINAPI GetProcessHeap();
+WINBASEAPI null*  WINAPI HeapAlloc(HANDLE hHeap, DWORD dwFlags, s64 dwBytes);
+WINBASEAPI BOOL   WINAPI HeapFree (HANDLE hHeap, DWORD dwFlags, null* lpMem);
+
+WINBASEAPI BOOL   WINAPI AllocConsole();
+
+WINBASEAPI HANDLE WINAPI GetStdHandle(DWORD nStdHandle);
+WINBASEAPI BOOL   WINAPI WriteFile(HANDLE hFile, const null* lpBuffer, DWORD nNumberOfBytesToWrite, DWORD* lpNumberOfBytesWritten, null* lpOverlapped);
+WINBASEAPI BOOL   WINAPI ReadFile (HANDLE hFile, const null* lpbuffer, DWORD nNumberOfBytesToRead,  DWORD* lpNumberOfBytesRead,    null* lpOverlapped);
+
+
+// ----- my implementation -----
 null exit(u32 exit_code);
 null print_console(const char* str);
 null read_console(u32 size);

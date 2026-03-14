@@ -21,14 +21,29 @@
 
 #include "Wprintf_util.h"
 
+static const fmt_handler printf_jump_table[256] = {
+    [fmt_decimal_d]     =  print_fmt_decimal_d,
+    [fmt_integer_i]     =  print_fmt_decimal_d,
+    [fmt_unsigned_u]    =  print_fmt_unsigned_u,
+    [fmt_octal_o]       =  print_fmt_octal_o,
+    [fmt_hexdecimal_lx] =  print_fmt_hexadecimal_x, // Cast if capitalised param differs
+    [fmt_hexdecimal_ux] =  print_fmt_hexadecimal_x,
+    [fmt_floating_f]    =  print_fmt_floating_f,
+    [fmt_string_s]      =  print_fmt_string_s,
+    [fmt_character_c]   =  print_fmt_character_c,
+    [fmt_char_format]   =  print_fmt_char_format,
+    [fmt_counter_n]     =  print_fmt_counter_n,
+    [fmt_pointer_p]     =  print_fmt_pointer_p
+};
+
 i32 printf(const i8* format, ...){
     va_list args;
 
     buffer32 buf32 = {
-        .buffer = VOID,
-        .temp_buffer = VOID,
-        .buffer_idx = 0,
-        .total_written = 0
+        .buffer         = VOID,
+        .temp_buffer    = VOID,
+        .buffer_idx     = VOID,
+        .total_written  = VOID,
     };
 
     va_start(args, format);
@@ -38,7 +53,7 @@ i32 printf(const i8* format, ...){
         if(buf32.buffer_idx >= flush_buff_limit) {
             flush_buffer(buf32.buffer, buf32.buffer_idx);
             buf32.total_written += buf32.buffer_idx;
-            buf32.buffer_idx = 0;
+            buf32.buffer_idx = VOID;
         }
 
         if(*p != char_format){
@@ -60,20 +75,20 @@ i32 printf(const i8* format, ...){
         // format specifiers
         fmt64 fmt_vals = {
             .is_negative    = false,
-            .wchar          = 0,
-            .temp_idx       = 0,
-            .wlen           = 0,
-            .max_char       = 0,
-            .max_wchar      = 0,
-            .digit_start    = 0,
-            .written        = 0,
-            .zeros_to_add   = 0,
-            .prec           = 0,
-            .valf           = 0,
-            .val            = 0,
-            .sval           = 0,
-            .absv           = 0,
-            .vallf          = 0,
+            .wchar          = VOID,
+            .temp_idx       = VOID,
+            .wlen           = VOID,
+            .max_char       = VOID,
+            .max_wchar      = VOID,
+            .digit_start    = VOID,
+            .written        = VOID,
+            .zeros_to_add   = VOID,
+            .prec           = VOID,
+            .valf           = VOID,
+            .val            = VOID,
+            .sval           = VOID,
+            .absv           = VOID,
+            .vallf          = VOID,
             .bytes32        = {},
             .bytes64        = {},
             .aptr           = nullptr,
@@ -83,68 +98,76 @@ i32 printf(const i8* format, ...){
             .vptr           = nullptr, 
         };
         
-        switch (*p) {
-        case fmt_integer_i : // %i and %d behave the same in printf
-        case fmt_decimal_d :
-            print_fmt_decimal_d(&args, &fmt_vals, &buf32, &spec);
-            break;
-        case fmt_floating_f:
-            print_fmt_floating_f(&args, &fmt_vals, &buf32, &spec);
-            break;
-        case fmt_exponent_le:
-            print_fmt_exponent_e(&args, &fmt_vals, &buf32, &spec, lower_case);
-            break;
-        case fmt_exponent_ue: 
-            print_fmt_exponent_e(&args, &fmt_vals, &buf32, &spec, upper_case);
-            break;
-        case fmt_generic_lg:
-            print_fmt_generic_g(&args, &fmt_vals, &buf32, &spec, lower_case);
-            break;
-        case fmt_generic_ug: 
-            print_fmt_generic_g(&args, &fmt_vals, &buf32, &spec, upper_case);
-            break;
-        case fmt_hexfloat_la:
-            print_fmt_hexfloat_a(&args, &fmt_vals, &buf32, &spec, lower_case);         
-            break;
-        case fmt_hexfloat_ua:
-            print_fmt_hexfloat_a(&args, &fmt_vals, &buf32, &spec, upper_case);         
-            break;
-        case fmt_unsigned_u: 
-            print_fmt_unsigned_u(&args, &fmt_vals, &buf32, &spec);
-            break;
-        case fmt_hexdecimal_lx: 
-            print_fmt_hexadecimal_x(&args, &fmt_vals, &buf32, &spec, lower_case);
-            break;
-        case fmt_hexdecimal_ux: 
-            print_fmt_hexadecimal_x(&args, &fmt_vals, &buf32, &spec, upper_case);
-            break;
-        case fmt_octal_o:   
-            print_fmt_octal_o(&args, &fmt_vals, &buf32, &spec);
-            break;
-        case fmt_pointer_p: 
-            print_fmt_pointer_p(&args, &fmt_vals, &buf32);
-            break;
-        case fmt_string_s:
-            print_fmt_string_s(&args, &spec, &fmt_vals, &buf32);
-            break;
-        case fmt_character_c: 
-            print_fmt_character_c(&args, &spec, &fmt_vals, &buf32);
-            break;
-        case fmt_char_format: 
-            print_fmt_char_format(&fmt_vals, &buf32); 
-            break;
-        case fmt_counter_n:
-            print_fmt_counter_n(&args, &fmt_vals, &buf32);
-            break;
-        default:  
+        fmt_handler handler = printf_jump_table[(u8)*p];
+        if(handler) {
+            handler(&args, &fmt_vals, &buf32, &spec);
+            copy_to_main_buffer(&buf32, &fmt_vals, &spec);
+        }else {
             default_print(&buf32, &fmt_vals, p);
-            break;
         }
-        // if (temp_idx == 0) { buf32.temp_buffer[temp_idx++] = '!'; }                     // disabled  Debug marker
-        // padding
+
+        // switch (*p) {
+        // case fmt_integer_i : // %i and %d behave the same in printf
+        // case fmt_decimal_d :
+        //     print_fmt_decimal_d(&args, &fmt_vals, &buf32, &spec);
+        //     break;
+        // case fmt_floating_f:
+        //     print_fmt_floating_f(&args, &fmt_vals, &buf32, &spec);
+        //     break;
+        // case fmt_exponent_le:
+        //     print_fmt_exponent_e(&args, &fmt_vals, &buf32, &spec);
+        //     break;
+        // case fmt_exponent_ue: 
+        //     print_fmt_exponent_e(&args, &fmt_vals, &buf32, &spec);
+        //     break;
+        // case fmt_generic_lg:
+        //     print_fmt_generic_g(&args, &fmt_vals, &buf32, &spec);
+        //     break;
+        // case fmt_generic_ug: 
+        //     print_fmt_generic_g(&args, &fmt_vals, &buf32, &spec);
+        //     break;
+        // case fmt_hexfloat_la:
+        //     print_fmt_hexfloat_a(&args, &fmt_vals, &buf32, &spec);         
+        //     break;
+        // case fmt_hexfloat_ua:
+        //     print_fmt_hexfloat_a(&args, &fmt_vals, &buf32, &spec);         
+        //     break;
+        // case fmt_unsigned_u: 
+        //     print_fmt_unsigned_u(&args, &fmt_vals, &buf32, &spec);
+        //     break;
+        // case fmt_hexdecimal_lx: 
+        //     print_fmt_hexadecimal_x(&args, &fmt_vals, &buf32, &spec);
+        //     break;
+        // case fmt_hexdecimal_ux: 
+        //     print_fmt_hexadecimal_x(&args, &fmt_vals, &buf32, &spec);
+        //     break;
+        // case fmt_octal_o:   
+        //     print_fmt_octal_o(&args, &fmt_vals, &buf32, &spec);
+        //     break;
+        // case fmt_pointer_p: 
+        //     print_fmt_pointer_p  (&args, &fmt_vals, &buf32, &spec);         
+        //     break;
+        // case fmt_string_s:
+        //     print_fmt_string_s  (&args, &fmt_vals, &buf32, &spec);   
+        //     break;
+        // case fmt_character_c: 
+        //     print_fmt_character_c  (&args, &fmt_vals, &buf32, &spec);   
+        //     break;
+        // case fmt_counter_n:
+        //     print_fmt_counter_n  (&args, &fmt_vals, &buf32, &spec);   
+        //     break;
+        // case fmt_char_format: 
+        //     print_fmt_char_format  (&args, &fmt_vals, &buf32, &spec);    
+        //     break;
+        // default:  
+        //     default_print(&buf32, &fmt_vals, p);
+        //     break;
+        // }
+        // // if (temp_idx == 0) { buf32.temp_buffer[temp_idx++] = '!'; }                     // disabled  Debug marker
+        // // padding
        
-        // copy to main buffer
-        copy_to_main_buffer(&buf32, &fmt_vals, &spec);
+        // // copy to main buffer
+        // copy_to_main_buffer(&buf32, &fmt_vals, &spec);
     }
     return end_printf(&buf32, &args);
 }
@@ -152,7 +175,7 @@ i32 printf(const i8* format, ...){
 null print_fmt_decimal_d(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp32 *spec) {
     fmt_vals->val = u64_get_val(args, spec->len_modifiers);
     fmt_vals->sval = (i64)fmt_vals->val;
-    if(fmt_vals->sval < 0) {
+    if(fmt_vals->sval < VOID) {
         buf32->temp_buffer[fmt_vals->temp_idx++] = char_minus;
         fmt_vals->is_negative = true;
         fmt_vals->val = (u64)-(fmt_vals->sval);
@@ -177,35 +200,35 @@ null print_fmt_floating_f(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp
     fmt_vals->temp_idx += f64tos(fmt_vals->vallf, buf32->temp_buffer+fmt_vals->temp_idx, fmt_vals->prec);
 }
 
-null print_fmt_exponent_e(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp32 *spec, boolean capitalised) {
+null print_fmt_exponent_e(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp32 *spec) {
     print_floating_util(args, fmt_vals, buf32, spec);
-    fmt_vals->temp_idx += f64toes(fmt_vals->vallf, buf32->temp_buffer + fmt_vals->temp_idx, fmt_vals->prec, capitalised);
+    fmt_vals->temp_idx += f64toes(fmt_vals->vallf, buf32->temp_buffer + fmt_vals->temp_idx, fmt_vals->prec, (spec->len_modifiers == char_ue));
 }
 
-null print_fmt_generic_g(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp32 *spec, boolean capitalised) {
+null print_fmt_generic_g(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp32 *spec) {
     print_floating_util(args, fmt_vals, buf32, spec);
     fmt_vals->absv = (fmt_vals->vallf < zero_f64) ? -fmt_vals->vallf : fmt_vals->vallf;
     if(fmt_vals->absv != zero_f64 && fmt_vals->absv >= absv_high || fmt_vals->absv < absv_low) {
-        fmt_vals->temp_idx += f64toes(fmt_vals->vallf, buf32->temp_buffer+fmt_vals->temp_idx, fmt_vals->prec-1, capitalised);
+        fmt_vals->temp_idx += f64toes(fmt_vals->vallf, buf32->temp_buffer+fmt_vals->temp_idx, fmt_vals->prec-1, (spec->len_modifiers == char_ug));
     } else fmt_vals->temp_idx += f64tos(fmt_vals->vallf, buf32->temp_buffer + fmt_vals->temp_idx, spec->precision);
 }
 
-null print_fmt_hexfloat_a(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp32 *spec, boolean capitalised) {
+null print_fmt_hexfloat_a(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp32 *spec) {
     buf32->temp_buffer[fmt_vals->temp_idx++] = char_zero;
-    buf32->temp_buffer[fmt_vals->temp_idx++] = capitalised ? char_ux : char_lx;
+    buf32->temp_buffer[fmt_vals->temp_idx++] = (spec->len_modifiers == char_ux) ? char_ux : char_lx;
 
     if(spec->len_modifiers == fmt_l){
         fmt_vals->vallf = va_arg( *args, f64);
-        memset(fmt_vals->bytes64, 0, size_64_bytes);
+        memset(fmt_vals->bytes64, VOID, size_64_bytes);
         memcpy(fmt_vals->bytes64, &fmt_vals->vallf, size_64_bytes);
-        for(i32 i = f64_start; i >= 0; i--)
-        fmt_vals->temp_idx += itos((u64)(*(fmt_vals->bytes64+i)), buf32->temp_buffer + fmt_vals->temp_idx, sys_hex, capitalised);
+        for(i32 i = f64_start; i >= VOID; i--)
+        fmt_vals->temp_idx += itos((u64)(*(fmt_vals->bytes64+i)), buf32->temp_buffer + fmt_vals->temp_idx, sys_hex, (spec->len_modifiers == char_ux));
     } else {
         fmt_vals->valf = (f32)va_arg( *args, f64);
-        memset(fmt_vals->bytes32, 0, size_32_bytes);
+        memset(fmt_vals->bytes32, VOID, size_32_bytes);
         memcpy(fmt_vals->bytes32, &fmt_vals->valf, size_32_bytes);
-        for(i32 i = f32_start; i>= 0; i--)
-        fmt_vals->temp_idx += itos((u64)(*(fmt_vals->bytes32+i)), buf32->temp_buffer + fmt_vals->temp_idx, sys_hex, capitalised);
+        for(i32 i = f32_start; i>= VOID; i--)
+        fmt_vals->temp_idx += itos((u64)(*(fmt_vals->bytes32+i)), buf32->temp_buffer + fmt_vals->temp_idx, sys_hex, (spec->len_modifiers == char_ux));
     }
 }
 
@@ -216,14 +239,14 @@ null print_fmt_unsigned_u(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp
     fmt_vals->temp_idx += handle_precision(buf32, spec, fmt_vals);
 }
 
-null print_fmt_hexadecimal_x(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp32 *spec, boolean capitalised) {
+null print_fmt_hexadecimal_x(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp32 *spec) {
     fmt_vals->val = u64_get_val(args, spec->len_modifiers);
     if ((spec->flags & fmt_alt) && fmt_vals->val != zero_u64) {
         buf32->temp_buffer[fmt_vals->temp_idx++] = char_zero;
-        buf32->temp_buffer[fmt_vals->temp_idx++] = capitalised ? char_ux : char_lx;
+        buf32->temp_buffer[fmt_vals->temp_idx++] = (spec->len_modifiers == char_ux) ? char_ux : char_lx;
     }
     fmt_vals->digit_start = fmt_vals->temp_idx;
-    fmt_vals->written += itos(fmt_vals->val, buf32->temp_buffer + fmt_vals->temp_idx, sys_hex, capitalised);
+    fmt_vals->written += itos(fmt_vals->val, buf32->temp_buffer + fmt_vals->temp_idx, sys_hex, (spec->len_modifiers == char_ux));
     fmt_vals->temp_idx += handle_precision(buf32, spec, fmt_vals);
 }
 null print_fmt_octal_o(va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec) {
@@ -239,14 +262,14 @@ null print_fmt_octal_o(va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32*
     
 }
 
-null print_fmt_pointer_p(va_list* args, fmt64* fmt_vals, buffer32* buf32) {
+null print_fmt_pointer_p(va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec) {
     fmt_vals->vptr = va_arg(*args, null*);
     buf32->temp_buffer[fmt_vals->temp_idx++] = char_zero;
     buf32->temp_buffer[fmt_vals->temp_idx++] = char_lx;
     fmt_vals->temp_idx += itos((u64)fmt_vals->vptr, buf32->temp_buffer + fmt_vals->temp_idx, sys_hex, lower_case);
 }
 
-null print_fmt_string_s(va_list* args, fmtsp32* spec, fmt64* fmt_vals, buffer32* buf32) {
+null print_fmt_string_s(va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec) {
     if(spec->len_modifiers & fmt_l){
         // wide string 
         fmt_vals->wstr = va_arg(*args, i16*);
@@ -259,14 +282,14 @@ null print_fmt_string_s(va_list* args, fmtsp32* spec, fmt64* fmt_vals, buffer32*
     } else {
         fmt_vals->str = va_arg(*args, const i8*);
         if(!fmt_vals->str) fmt_vals->str = null_string;
-        fmt_vals->max_char = (spec->precision>= zero_precision) ? spec->precision : -1;
+        fmt_vals->max_char = (spec->precision>= zero_precision) ? spec->precision : max_i32;
         while(*fmt_vals->str && (fmt_vals->max_char < zero_precision || fmt_vals->temp_idx < fmt_vals->max_char) && (fmt_vals->temp_idx < temp_buffer_size -1)) {
             buf32->temp_buffer[fmt_vals->temp_idx++] = *fmt_vals->str++;
         }
     }
 }
 
-null print_fmt_character_c(va_list* args, fmtsp32* spec, fmt64* fmt_vals, buffer32* buf32) {
+null print_fmt_character_c(va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec) {
     fmt_vals->sval = va_arg(*args, i32);
 
     if(spec->len_modifiers & fmt_l) {
@@ -279,10 +302,10 @@ null print_fmt_character_c(va_list* args, fmtsp32* spec, fmt64* fmt_vals, buffer
     }
 }
 
-null print_fmt_char_format(fmt64 *fmt_vals, buffer32 *buf32) {
+null print_fmt_char_format(va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec) {
     buf32->temp_buffer[fmt_vals->temp_idx++] = char_format;
 }
-null print_fmt_counter_n(va_list *args, fmt64 *fmt_vals, buffer32 *buf32)
+null print_fmt_counter_n(va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec)
 {
     fmt_vals->iptr = va_arg(*args, i32*);
     if(fmt_vals->iptr){
@@ -298,7 +321,7 @@ null default_print(buffer32 *buf32, fmt64 *fmt_vals, const i8* p) {
 i32 end_printf(buffer32 *buf32, va_list* args) {
     flush_buffer(buf32->buffer, buf32->buffer_idx);
     buf32->total_written += buf32->buffer_idx;
-    buf32->buffer_idx = 0;                               // reset the buffer index [ otherwise causes duplication ]
+    buf32->buffer_idx = VOID;                               // reset the buffer index [ otherwise causes duplication ]
     va_end(*args);
     return buf32->total_written;    
 }
@@ -309,7 +332,7 @@ null copy_to_main_buffer(buffer32* buf32, fmt64* fmt_vals, fmtsp32* spec) {
         if(buf32->buffer_idx >= flush_buff_limit) {
             flush_buffer(buf32->buffer, buf32->buffer_idx);
             buf32->total_written += buf32->buffer_idx;
-            buf32->buffer_idx = 0;
+            buf32->buffer_idx = VOID;
         }
         buf32->buffer[buf32->buffer_idx++] = buf32->temp_buffer[i];
     }

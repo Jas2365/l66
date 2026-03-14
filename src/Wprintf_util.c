@@ -17,33 +17,55 @@
 #include "Wprintf_util.h"
 #include "Wwin.h"
 
+#define IS_FLAG     (1 << 0)
+#define IS_MODIFER  (1 << 1)
+#define IS_DIGIT    (1 << 2)
+
+static const u8 fmt_table[256] = {
+    // flags
+    [flag_left ] = IS_FLAG, 
+    [flag_plus ] = IS_FLAG,
+    [flag_space] = IS_FLAG,
+    [flag_zero ] = IS_FLAG,
+    [flag_alt  ] = IS_FLAG,
+
+    // modifiers
+    [len_h] = IS_MODIFER,
+    [len_j] = IS_MODIFER,
+    [len_l] = IS_MODIFER,
+    [len_z] = IS_MODIFER,
+    [len_t] = IS_MODIFER,
+
+    // digit
+    [char_zero ] = IS_DIGIT,
+    [char_one  ] = IS_DIGIT,
+    [char_two  ] = IS_DIGIT,
+    [char_three] = IS_DIGIT,
+    [char_four ] = IS_DIGIT,
+    [char_five ] = IS_DIGIT,
+    [char_siz  ] = IS_DIGIT,
+    [char_seven] = IS_DIGIT,
+    [char_eight] = IS_DIGIT,
+    [char_nine ] = IS_DIGIT,
+};
+
 null reset_fmt(fmtsp32* spec) {
-    spec->flags = fmt_n;
-    spec->width = 0;
-    spec->precision = -1;
+    spec->flags         = fmt_n;
+    spec->width         = no_padding;
+    spec->precision     = no_precision;
     spec->len_modifiers = fmt_n;
 }
 
 boolean is_flag(const i8* p) {
-    return (
-        *p == flag_left  ||
-        *p == flag_plus  ||
-        *p == flag_space ||
-        *p == flag_zero  ||
-        *p == flag_alt 
-    );
+    return fmt_table[(u8)*p] & IS_FLAG;
 }
 
 boolean is_modifer(const i8* p) {
-    return (
-        *p  ==  len_h  ||
-        *p  ==  len_hh ||
-        *p  ==  len_l  ||
-        *p  ==  len_ll ||
-        *p  ==  len_z  ||
-        *p  ==  len_j  ||
-        *p  ==  len_t
-    );
+    return fmt_table[(u8)*p] & IS_MODIFER;
+}
+
+boolean is_digit(const i8* p) {
+    return fmt_table[(u8)*p] & IS_DIGIT;
 }
 
 null flush_buffer(const i8* buffer, i32 len){
@@ -60,12 +82,14 @@ const i8* parse_fmt(const i8* p, fmtsp32* spec, va_list* args) {
     reset_fmt(spec);
 
     // flags
-    while(*p && is_flag(p)) {
-        if      (*p == flag_left  )  spec->flags |= fmt_left;
-        else if (*p == flag_plus  )  spec->flags |= fmt_plus;
-        else if (*p == flag_space )  spec->flags |= fmt_space;
-        else if (*p == flag_zero  )  spec->flags |= fmt_zero;
-        else if (*p == flag_alt   )  spec->flags |= fmt_alt;
+    while(is_flag(p)) {
+        switch(*p){
+            case flag_left  : spec->flags |= fmt_left;  break;
+            case flag_plus  : spec->flags |= fmt_plus;  break;
+            case flag_space : spec->flags |= fmt_space; break;
+            case flag_zero  : spec->flags |= fmt_zero;  break;
+            case flag_alt   : spec->flags |= fmt_alt;   break;
+        }
         p++;
     }
 
@@ -74,7 +98,7 @@ const i8* parse_fmt(const i8* p, fmtsp32* spec, va_list* args) {
         spec->width = va_arg(*args, i32);
         p++;
     } else {
-        while(*p >= char_zero && *p <= char_nine){
+        while(is_digit(p)){
             spec->width = spec->width * 10 + (*p - char_zero);
             p++;
         }
@@ -88,7 +112,7 @@ const i8* parse_fmt(const i8* p, fmtsp32* spec, va_list* args) {
             spec->precision = va_arg(*args, i32);
             p++;
         } else {
-            while(*p >= char_zero && *p <= char_nine) {
+            while(is_digit(p)) {
                 spec->precision = spec->precision * 10 + (*p - char_zero);
                 p++;
             }
@@ -96,28 +120,20 @@ const i8* parse_fmt(const i8* p, fmtsp32* spec, va_list* args) {
     }
 
 
-    if(*p == len_l){
-        spec->len_modifiers = fmt_l;
-        p++;
-        if(*p == len_ll) { 
-            spec->len_modifiers = fmt_ll;
-            p++;
+    // modifiers
+    if(is_modifer(p)) {
+
+        if(*p == len_l){
+            spec->len_modifiers = (p[1] == len_ll) ? (p++, fmt_ll)  : fmt_l ;
+        } else if(*p == len_h) {
+            spec->len_modifiers = (p[1] == len_hh) ? (p++, fmt_hh)  : fmt_h ;
+        } else if(*p == len_z) {
+            spec->len_modifiers = fmt_z;
+        } else if(*p == len_j) {
+            spec->len_modifiers = fmt_j;
+        } else if(*p == len_t) {
+            spec->len_modifiers = fmt_t;
         }
-    } else if(*p == len_h) {
-        spec->len_modifiers = fmt_h;
-        p++;
-        if(*p == len_hh) {
-            spec->len_modifiers = fmt_hh;
-            p++;
-        }
-    } else if(*p == len_z) {
-        spec->len_modifiers = fmt_z;
-        p++;
-    } else if(*p == len_j) {
-        spec->len_modifiers = fmt_j;
-        p++;
-    } else if(*p == len_t) {
-        spec->len_modifiers = fmt_t;
         p++;
     } else {
         spec->len_modifiers = fmt_n;

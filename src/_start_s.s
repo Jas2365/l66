@@ -19,14 +19,14 @@
 
 _start_s:
     subq $40, %rsp
+    
     call AllocConsole
     testq %rax, %rax
     jz  .alloc_console_failure
+    
     call _start_c
-    addq $40, %rsp
-    xorq %rcx, %rcx
-    call ExitProcess
     
 .alloc_console_failure:
+    addq $40, %rsp
     movq $1, %rcx
     call ExitProcess

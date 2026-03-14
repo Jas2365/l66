@@ -17,26 +17,44 @@
 #pragma once
 #include "Wtypes.h"
 
-#define VOID 0LL
-#define exit_success 0
-#define exit_failure 1
+#define VOID         (0)
+#define exit_success (0)
+#define exit_failure (1)
+
+#define WIN_IMPORT __declspec(dllimport)
+
+#if defined(_WIN32) && !defined(_WIN64)
+    #define WINAPI __stdcall
+#else
+    #define WINAPI
+#endif
+
+#define WINBASEAPI WIN_IMPORT
 
 #define INVALID_HANDLE_VALUE ((HANDLE)(uintptr_t)-1)
-#define STD_OUTPUT_HANDLE    ((DWORD)-11)
 #define STD_INPUT_HANDLE     ((DWORD)-10)
+#define STD_OUTPUT_HANDLE    ((DWORD)-11)
 
 #define stdout GetStdHandle(STD_OUTPUT_HANDLE)
 #define stdin  GetStdHandle(STD_INPUT_HANDLE)
 
 typedef i8* va_list;
-#define va_arg(ap, type) (*(type*)((ap += 8) -8))
-#define va_align(n) (((n) + 7) & ~7)
-#define va_start(ap, last)   (ap = (va_list)&(last) + va_align(sizeof(last)))
-#define va_end(ap)        (ap = (va_list)0)
 
-#define buf_size 2048
+#ifdef _WIN64
+    #define va_align(type) ((sizeof(type) +7 ) & ~7) // x64 aligns stack argumnets to 8 bytes
+
+#elif defined(_WIN32)
+    #define va_align(type) ((sizeof(type) +3 ) & ~3) // x86 aligns stack argumnets to 4 bytes
+
+#endif
+
+#define va_start(ap, last) ((null)   (ap = (va_list)&(last) + va_align(last)))
+#define va_arg(ap, type)   (*(type*)((ap += va_align(type)) - va_align(type)))
+#define va_end(ap)         ((null)(ap = 0))
+
+#define buf_size         2048
 #define temp_buffer_size 1024
-#define flush_buff_limit 768
+#define flush_buff_limit  768
 
 #define flag_left  '-'
 #define flag_plus  '+'
@@ -47,9 +65,18 @@ typedef i8* va_list;
 #define dyn_width  '*'
 #define char_la    'a'
 #define char_ua    'A'
+
 #define char_zero  '0'
 #define char_one   '1'
+#define char_two   '2'
+#define char_three '3'
+#define char_four  '4'
+#define char_five  '5'
+#define char_siz   '6'
+#define char_seven '7'
+#define char_eight '8'
 #define char_nine  '9'
+
 #define char_space ' '
 
 #define char_format '%'
@@ -58,6 +85,10 @@ typedef i8* va_list;
 #define char_space  ' '
 #define char_lx     'x'
 #define char_ux     'X'
+#define char_le     'e'
+#define char_ue     'E'
+#define char_lg     'g'
+#define char_ug     'G'
 #define char_lp     'p'
 #define char_up     'P'
 #define char_o      'o'
@@ -82,6 +113,8 @@ typedef i8* va_list;
 #define lower_case false
 #define upper_case true
 
+#define no_padding        (i32)( 0 )
+#define no_precision      (i32)( -1 )
 #define default_precision (i32)( 6 ) 
 #define absv_high         (f64)( 1000000.0 )
 #define absv_low          (f64)( 0.0001 )

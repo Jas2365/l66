@@ -113,7 +113,7 @@ typedef u64  um64; // uintmax_t
     #define max_ip64  (9223372036854775807LL)
     #define min_pd64  (-9223372036854775807LL - 1)
     #define max_pd64  (9223372036854775807LL)
-#elif _WIN32
+#elif defined(_WIN32)
     typedef u32   size_t;
     typedef i32   ssize_t;
     typedef u32   uintptr_t;
@@ -153,10 +153,3 @@ typedef u64  um64; // uintmax_t
 #define max_intmax_t  (9223372036854775807LL)
 #define min_uintmax_t (0)
 #define max_uintmax_t (18446744073709551615ULL)
-
-// ----- win types -----
-typedef null *HANDLE;
-typedef null *HWND;
-typedef null *HINSTANCE;
-typedef u32   DWORD;
-typedef i32   BOOL;
