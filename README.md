@@ -20,7 +20,7 @@ An ultra-lightweight, freestanding implementation of the C Standard Library for 
 - **Custom Printf**: Lightweight `printf` implementation
 - **Memory Management**: `malloc` and `free` implemented using Windows process heap API (`GetProcessHeap`)
 - **Complete Entry Point Control**: Custom assembly (`_start_s`) and C entry point (`_start_c`) instead of standard runtime initialization
-- **Fixed-Width Types**: Portable type definitions (`u8`, `u16`, `u32`, `u64`, `i8`, `i16`, `i32`, `i64`, `s64`, `ss64`, `uintptr_t`)
+- **Fixed-Width Types**: Portable type definitions see Data Types Implementation
 - **Minimal Binary Size**: Optimized with `-Os` and stripped of all non-essential symbols
 
 ## Prerequisites
@@ -60,6 +60,7 @@ The compiled executable is generated at `out/main.exe`.
 │   ├── Wmath.h           # Math utilities
 │   ├── Wmem.h            # Memory management
 │   ├── Wprintf.h         # Printf implementation
+│   ├── Wprintf_util.h    # Printf utilites like check flags or apply apdding
 │   ├── Wstring.h         # value to string implementation
 │   ├── Wtypes.h          # Type definitions
 │   └── wwin.h            # Windows API wrappers
