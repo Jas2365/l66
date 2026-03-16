@@ -120,11 +120,11 @@ typedef u64  um64; // uintmax_t
     typedef i32   intptr_t;
     typedef i32   ptrdiff_t;
     
-    typedef u32   s64;
-    typedef i32   ss64;
-    typedef u32   up64;
-    typedef i32   ip64;
-    typedef i32   pd64;
+    typedef u32   s32;
+    typedef i32   ss32;
+    typedef u32   up32;
+    typedef i32   ip32;
+    typedef i32   pd32;
     
     #define min_size_t   (0)
     #define max_size_t   (4294967295U)
@@ -137,16 +137,16 @@ typedef u64  um64; // uintmax_t
     #define min_ptrdiff_t (-2147483648)
     #define max_ptrdiff_t (2147483647)
     
-    #define min_s64   (0)
-    #define max_s64   (4294967295U)
-    #define min_ss64  (-2147483648)
-    #define max_ss64  (2147483647)
-    #define min_up64 (0)
-    #define max_up64 (4294967295U)
-    #define min_ip64 (-2147483648)
-    #define max_ip64 (2147483647)
-    #define min_pd64 (-2147483648)
-    #define max_pd64 (2147483647)
+    #define min_s32   (0)
+    #define max_s32   (4294967295U)
+    #define min_ss32  (-2147483648)
+    #define max_ss32  (2147483647)
+    #define min_up32 (0)
+    #define max_up32 (4294967295U)
+    #define min_ip32 (-2147483648)
+    #define max_ip32 (2147483647)
+    #define min_pd32 (-2147483648)
+    #define max_pd32 (2147483647)
 #endif
 
 #define min_intmax_t  (-9223372036854775807LL - 1)
