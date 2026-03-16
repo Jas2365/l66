@@ -32,7 +32,7 @@ i32 check_max(i8* buffer, i32 len) {
 }
 
 i32 check_min(i8* buffer, i32 len) {
-    buffer[len++] = '-';
+    buffer[len++] = char_minus;
     buffer[len++] = 'I';
     buffer[len++] = 'n';
     buffer[len++] = 'f';
@@ -41,7 +41,7 @@ i32 check_min(i8* buffer, i32 len) {
 
 i32 itos(u64 val, i8* buffer, i32 base, boolean capitalised) {
     if(val == 0) {
-        buffer[0] = '0';
+        buffer[0] = char_zero;
         return 1;
     }
 
@@ -64,7 +64,7 @@ i32 itos(u64 val, i8* buffer, i32 base, boolean capitalised) {
 
 i32 f32tos(f64 val, i8* buffer, i32 precision){ // f64 val cus the compiler promotes floats to double
     i32 len = 0;
-    if (val < 0) { buffer[len++] = '-'; val = -val; }
+    if (val < 0) { buffer[len++] = char_minus; val = -val; }
     
     if(val != val)    return check_nan(buffer, len);
     if(val > max_f32) return check_max(buffer, len);
@@ -80,12 +80,12 @@ i32 f32tos(f64 val, i8* buffer, i32 precision){ // f64 val cus the compiler prom
     len += itos(ipart, buffer + len, sys_decimal, lower_case);
     
     if(precision > 0) {
-        buffer[len++] = '.';
+        buffer[len++] = decimal_point;
         i32 digit;
         for(i32 i = 0; i< precision; i++) {
             fpart *= 10.0;
             digit = (i32)fpart;
-            buffer[len++] = digit + '0';
+            buffer[len++] = digit + char_zero;
             fpart -= digit;
         }
     }
@@ -93,7 +93,7 @@ i32 f32tos(f64 val, i8* buffer, i32 precision){ // f64 val cus the compiler prom
 }
 i32 f64tos(f64 val, i8* buffer, i32 precision){
     i32 len = 0;
-    if (val < 0) { buffer[len++] = '-'; val = -val; }
+    if (val < 0) { buffer[len++] = char_minus; val = -val; }
     
     if(val != val)    return check_nan(buffer, len);
     if(val > max_f64) return check_max(buffer, len);
@@ -108,12 +108,12 @@ i32 f64tos(f64 val, i8* buffer, i32 precision){
     len += itos(ipart, buffer + len, sys_decimal, lower_case);
     
     if(precision > 0) {
-        buffer[len++] = '.';
+        buffer[len++] = decimal_point;
         i32 digit;
         for(i32 i = 0; i< precision; i++) {
             fpart *= 10.0;
             digit = (i32)fpart;
-            buffer[len++] = digit + '0';
+            buffer[len++] = digit + char_zero;
             fpart -= digit;
         }
     }
@@ -123,7 +123,7 @@ i32 f64tos(f64 val, i8* buffer, i32 precision){
 i32 f32toes(f64 val, i8* buffer, i32 precision, boolean capitalised) {
     i32 len = 0;
 
-    if(val < 0) { buffer[len++] = '-'; val = -val; }
+    if(val < 0) { buffer[len++] = char_minus; val = -val; }
     if(val != val)    return check_nan(buffer, len);
     if(val > max_f32) return check_max(buffer, len);
     if(val < min_f32) return check_min(buffer, len);
@@ -136,8 +136,8 @@ i32 f32toes(f64 val, i8* buffer, i32 precision, boolean capitalised) {
     }
     len += f32tos(val, buffer + len, precision);
 
-    buffer[len++] = capitalised ? 'E' : 'e';
-    buffer[len++] = (ex >= 0) ? '+' : '-';
+    buffer[len++] = capitalised ? char_ue : char_le;
+    buffer[len++] = (ex >= 0) ? char_plus : char_minus;
 
     i32 abs_ex = (ex < 0) ? -ex : ex;
     if(abs_ex < 10) buffer[len++] = '0';
@@ -146,7 +146,7 @@ i32 f32toes(f64 val, i8* buffer, i32 precision, boolean capitalised) {
 }
 i32 f64toes(f64 val, i8* buffer, i32 precision, boolean capitalised) {
     i32 len = 0;
-    if(val < 0) { buffer[len++] = '-'; val = -val; }
+    if(val < 0) { buffer[len++] = char_minus; val = -val; }
     if(val != val)    return check_nan(buffer, len);
     if(val > max_f64) return check_max(buffer, len);
     if(val < min_f64) return check_min(buffer, len);
@@ -160,11 +160,11 @@ i32 f64toes(f64 val, i8* buffer, i32 precision, boolean capitalised) {
     }
     len += f64tos(val, buffer + len, precision);
 
-    buffer[len++] = capitalised ? 'E' : 'e';
-    buffer[len++] = (ex >= 0) ? '+' : '-';
+    buffer[len++] = capitalised ? char_ue : char_le;
+    buffer[len++] = (ex >= 0) ? char_plus : char_minus;
 
     i32 abs_ex = (ex < 0) ? -ex : ex;
-    if(abs_ex < 10) buffer[len++] = '0';
+    if(abs_ex < 10) buffer[len++] = char_zero;
     len+= itos((u64)abs_ex, buffer + len, sys_decimal, capitalised);
     return len;
 }
@@ -216,7 +216,7 @@ i32 utf16_to_utf8(const w16 *wstr, i32 wlen, i8 *buf, i32 max_buf_len) {
 // f128 functions have been commented out for future use
 // i32 f128tos(f128 val, i8* buffer, i32 precision){
 //     i32 len = 0;
-//     if (val < 0) { buffer[len++] = '-'; val = -val; }
+//     if (val < 0) { buffer[len++] = char_minus; val = -val; }
     
 //     if(val != val)    return check_nan(buffer, len);
 //     if(val > max_f128) return check_max(buffer, len);
@@ -232,7 +232,7 @@ i32 utf16_to_utf8(const w16 *wstr, i32 wlen, i8 *buf, i32 max_buf_len) {
 //     len += itos(ipart, buffer + len, sys_decimal, lower_case);
     
 //     if(precision > 0) {
-//         buffer[len++] = '.';
+//         buffer[len++] = decimal_point;
 //         i32 digit;
 //         for(i32 i = 0; i< precision; i++) {
 //             fpart *= 10.0;
@@ -247,7 +247,7 @@ i32 utf16_to_utf8(const w16 *wstr, i32 wlen, i8 *buf, i32 max_buf_len) {
 // i32 f128toes(f128 val, i8* buffer, i32 precision, boolean capitalised) {
 //     i32 len = 0;
 
-//     if(val < 0.0L) { buffer[len++] = '-'; val = -val; }
+//     if(val < 0.0L) { buffer[len++] = char_minus; val = -val; }
 //     if(val != val)    return check_nan(buffer, len);
 //     if(val > max_f128) return check_max(buffer, len);
 //     if(val < min_f128) return check_min(buffer, len);
@@ -261,7 +261,7 @@ i32 utf16_to_utf8(const w16 *wstr, i32 wlen, i8 *buf, i32 max_buf_len) {
 //     len += f128tos(val, buffer + len, precision);
 
 //     buffer[len++] = capitalised ? 'E' : 'e';
-//     buffer[len++] = (ex >= 0) ? '+' : '-';
+//     buffer[len++] = (ex >= 0) ? '+' : char_minus;
 
 //     i32 abs_ex = (ex < 0) ? -ex : ex;
 //     if(abs_ex < 10) buffer[len++] = '0';
