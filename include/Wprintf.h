@@ -41,6 +41,5 @@ null print_fmt_octal_o       (va_list* args, fmt64* fmt_vals, buffer32* buf32, f
 null print_fmt_pointer_p     (va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec);
 null print_fmt_string_s      (va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec);
 null print_fmt_character_c   (va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec);
-null print_fmt_char_format   (va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec);
 null print_fmt_counter_n     (va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec);
 null default_print           (buffer32* arg, fmt64* fmt_val, const i8* p);

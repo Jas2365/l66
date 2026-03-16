@@ -57,7 +57,7 @@ null _start_c() {
     printf("%d\n",23);
     printf("%i\n",23);
     printf("%f\n",23.0f);
-    printf("%g\n",23.0f);                   // the g and e are not working 
+    printf("%g\n",23.0f);
     printf("%e\n",23.0f);
     printf("%c\n",236);
     printf("%c\n",2365);

@@ -22,18 +22,23 @@
 #include "Wprintf_util.h"
 
 static const fmt_handler printf_jump_table[256] = {
-    [fmt_decimal_d]     =  print_fmt_decimal_d,
-    [fmt_integer_i]     =  print_fmt_decimal_d,
-    [fmt_unsigned_u]    =  print_fmt_unsigned_u,
-    [fmt_octal_o]       =  print_fmt_octal_o,
-    [fmt_hexdecimal_lx] =  print_fmt_hexadecimal_x, // Cast if capitalised param differs
-    [fmt_hexdecimal_ux] =  print_fmt_hexadecimal_x,
-    [fmt_floating_f]    =  print_fmt_floating_f,
-    [fmt_string_s]      =  print_fmt_string_s,
-    [fmt_character_c]   =  print_fmt_character_c,
-    [fmt_char_format]   =  print_fmt_char_format,
-    [fmt_counter_n]     =  print_fmt_counter_n,
-    [fmt_pointer_p]     =  print_fmt_pointer_p
+    [fmt_integer_i]      =  print_fmt_decimal_d,
+    [fmt_decimal_d]      =  print_fmt_decimal_d,
+    [fmt_floating_f]     =  print_fmt_floating_f,
+    [fmt_exponent_le]    =  print_fmt_exponent_e,
+    [fmt_exponent_ue]    =  print_fmt_exponent_e,
+    [fmt_generic_lg]     =  print_fmt_generic_g,
+    [fmt_generic_ug]     =  print_fmt_generic_g,
+    [fmt_hexfloat_la]    =  print_fmt_hexfloat_a,
+    [fmt_hexfloat_ua]    =  print_fmt_hexfloat_a,
+    [fmt_unsigned_u]     =  print_fmt_unsigned_u,
+    [fmt_hexdecimal_lx]  =  print_fmt_hexadecimal_x, 
+    [fmt_hexdecimal_ux]  =  print_fmt_hexadecimal_x, 
+    [fmt_octal_o]        =  print_fmt_octal_o,
+    [fmt_pointer_p]      =  print_fmt_pointer_p,
+    [fmt_string_s]       =  print_fmt_string_s,
+    [fmt_character_c]    =  print_fmt_character_c,
+    [fmt_counter_n]      =  print_fmt_counter_n,
 };
 
 i32 printf(const i8* format, ...){
@@ -70,8 +75,7 @@ i32 printf(const i8* format, ...){
         // Parser 
         fmtsp32 spec;
         p = parse_fmt(p, &spec, &args);
-        // p--;                                                      // ! could be a bug [ bug ]
-
+        
         // format specifiers
         fmt64 fmt_vals = {
             .is_negative    = false,
@@ -101,73 +105,11 @@ i32 printf(const i8* format, ...){
         fmt_handler handler = printf_jump_table[(u8)*p];
         if(handler) {
             handler(&args, &fmt_vals, &buf32, &spec);
-            copy_to_main_buffer(&buf32, &fmt_vals, &spec);
         }else {
             default_print(&buf32, &fmt_vals, p);
         }
+        copy_to_main_buffer(&buf32, &fmt_vals, &spec);
 
-        // switch (*p) {
-        // case fmt_integer_i : // %i and %d behave the same in printf
-        // case fmt_decimal_d :
-        //     print_fmt_decimal_d(&args, &fmt_vals, &buf32, &spec);
-        //     break;
-        // case fmt_floating_f:
-        //     print_fmt_floating_f(&args, &fmt_vals, &buf32, &spec);
-        //     break;
-        // case fmt_exponent_le:
-        //     print_fmt_exponent_e(&args, &fmt_vals, &buf32, &spec);
-        //     break;
-        // case fmt_exponent_ue: 
-        //     print_fmt_exponent_e(&args, &fmt_vals, &buf32, &spec);
-        //     break;
-        // case fmt_generic_lg:
-        //     print_fmt_generic_g(&args, &fmt_vals, &buf32, &spec);
-        //     break;
-        // case fmt_generic_ug: 
-        //     print_fmt_generic_g(&args, &fmt_vals, &buf32, &spec);
-        //     break;
-        // case fmt_hexfloat_la:
-        //     print_fmt_hexfloat_a(&args, &fmt_vals, &buf32, &spec);         
-        //     break;
-        // case fmt_hexfloat_ua:
-        //     print_fmt_hexfloat_a(&args, &fmt_vals, &buf32, &spec);         
-        //     break;
-        // case fmt_unsigned_u: 
-        //     print_fmt_unsigned_u(&args, &fmt_vals, &buf32, &spec);
-        //     break;
-        // case fmt_hexdecimal_lx: 
-        //     print_fmt_hexadecimal_x(&args, &fmt_vals, &buf32, &spec);
-        //     break;
-        // case fmt_hexdecimal_ux: 
-        //     print_fmt_hexadecimal_x(&args, &fmt_vals, &buf32, &spec);
-        //     break;
-        // case fmt_octal_o:   
-        //     print_fmt_octal_o(&args, &fmt_vals, &buf32, &spec);
-        //     break;
-        // case fmt_pointer_p: 
-        //     print_fmt_pointer_p  (&args, &fmt_vals, &buf32, &spec);         
-        //     break;
-        // case fmt_string_s:
-        //     print_fmt_string_s  (&args, &fmt_vals, &buf32, &spec);   
-        //     break;
-        // case fmt_character_c: 
-        //     print_fmt_character_c  (&args, &fmt_vals, &buf32, &spec);   
-        //     break;
-        // case fmt_counter_n:
-        //     print_fmt_counter_n  (&args, &fmt_vals, &buf32, &spec);   
-        //     break;
-        // case fmt_char_format: 
-        //     print_fmt_char_format  (&args, &fmt_vals, &buf32, &spec);    
-        //     break;
-        // default:  
-        //     default_print(&buf32, &fmt_vals, p);
-        //     break;
-        // }
-        // // if (temp_idx == 0) { buf32.temp_buffer[temp_idx++] = '!'; }                     // disabled  Debug marker
-        // // padding
-       
-        // // copy to main buffer
-        // copy_to_main_buffer(&buf32, &fmt_vals, &spec);
     }
     return end_printf(&buf32, &args);
 }
@@ -302,9 +244,6 @@ null print_fmt_character_c(va_list* args, fmt64* fmt_vals, buffer32* buf32, fmts
     }
 }
 
-null print_fmt_char_format(va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec) {
-    buf32->temp_buffer[fmt_vals->temp_idx++] = char_format;
-}
 null print_fmt_counter_n(va_list* args, fmt64* fmt_vals, buffer32* buf32, fmtsp32* spec)
 {
     fmt_vals->iptr = va_arg(*args, i32*);
