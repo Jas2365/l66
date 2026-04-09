@@ -147,6 +147,7 @@ null print_fmt_exponent_e(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp
     fmt_vals->temp_idx += f64toes(fmt_vals->vallf, buf32->temp_buffer + fmt_vals->temp_idx, fmt_vals->prec, (spec->len_modifiers == char_ue));
 }
 
+// should ftos get prec-1 or precision
 null print_fmt_generic_g(va_list *args, fmt64 *fmt_vals, buffer32 *buf32, fmtsp32 *spec) {
     print_floating_util(args, fmt_vals, buf32, spec);
     fmt_vals->absv = (fmt_vals->vallf < zero_f64) ? -fmt_vals->vallf : fmt_vals->vallf;
